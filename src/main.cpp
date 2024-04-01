@@ -1,11 +1,30 @@
-#include <Arduino.h>
+#include "Main.h"
 
-void setup() 
+#if defined(DEPLOY) && !defined(INTEGRATED_TEST)
+void setup()
+#else
+void setupmain()
+#endif
 {
-  
+
 }
 
-void loop() 
+#if defined(DEPLOY) && !defined(INTEGRATED_TEST)
+void loop()
 {
 
 }
+#else
+void loopmain()
+{
+
+}
+#endif
+
+#ifndef DEPLOY
+int main(void)
+{
+    setupmain();
+    loopmain();
+}
+#endif
