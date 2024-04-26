@@ -27,6 +27,13 @@ void loopmain()
 {
     manager.run(horno);
     supervisor.verify_all(horno);
+
+    Esp32::serial_println("======================");
+
+    manager.run(horno);
+    supervisor.verify_all(horno);
+
+    Esp32::serial_println("======================");
 }
 #endif
 
