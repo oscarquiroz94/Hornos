@@ -29,8 +29,5 @@
 //************************************************************
 
 
-#ifndef DEPLOY
-
-#else
-    #include <Arduino.h>
-#endif
+#define SHOW_IO
+#define OUTFROM_CONSOLE

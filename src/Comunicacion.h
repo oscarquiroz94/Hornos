@@ -1,26 +1,38 @@
 #ifndef __COMUNICACION
 #define __COMUNICACION
 
-#include "Esp32.h"
+#include "IEsp32.h"
 
 class Comunicacion
 {
     public:
         Comunicacion()
         {
-            Esp32::serial_println("Comunicacion: instance created");
+            IEsp32::serial_println("Comunicacion: instance created");
         }
 
-        void send(const char* comando)
-        {
-            //Serial.print(comando);
-        }
+        static constexpr int sizecomand = 100;
+        char comando[sizecomand];
+        
+        int longitud(const char *cadena);
+        bool comparar(const char *cadena, const char *subcadena);
+        bool compararEqual(const char *cadena, const char *subcadena);
+
+        void send(const int page, const char* obj, double valor);
+        void send(const char* obj);
 
         ~Comunicacion()
         {
-            Esp32::serial_println("Comunicacion: instance deleted");
+            IEsp32::serial_println("Comunicacion: instance deleted");
         }
+    
+    private:
+        void sendFinal();
+
 };
+
+
+
 
 
 

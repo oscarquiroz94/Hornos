@@ -1,25 +1,24 @@
 #ifndef __CONTROL
 #define __CONTROL
 
-#include "Esp32.h"
+#include "IEsp32.h"
 
 class Control
 {
     public:
         Control()
         {
-            Esp32::serial_println("Control: instance created");
+            IEsp32::serial_println("Control: instance created");
         }
 
-        //Valor deseado de temperatura
-        void set_valor_deseado(double valor){}
+        void set_temperatura_deseada(double valor){}
 
         //Porcentaje de potencia quemador
         double regular(){return 0.0;}
 
         ~Control()
         {
-            Esp32::serial_println("Control: instance deleted");
+            IEsp32::serial_println("Control: instance deleted");
         }
 };
 

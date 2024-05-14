@@ -2,31 +2,37 @@
 #define __MOTOR
 
 #include "Identity.h"
-#include "Esp32.h"
+#include "IEsp32.h"
 
 class Motor
 {
     public:
-        Motor(short tp) :
-            running(IDENT::INVENTRUN)
+        Motor(uint8_t tp) :
+            running(IDENT::INVENTRUN, PIN_VENT_RUNNING),
+            pinonoff(IDENT::OUTVENT, PIN_VENT_ONOFF)
         {
             type = tp;
-            Esp32::serial_print("Motor: instance created ");
-            Esp32::serial_println(type);
+            IEsp32::serial_print("Motor: instance created ");
+            IEsp32::serial_println((uint16_t)type);
         }
 
-        void on(){}
-        void off(){}
+        void on()  {pinonoff.high();}
+        void off() {pinonoff.low();}
+
         bool isRunning(){return running.read();}
 
         ~Motor()
         {
-            Esp32::serial_println("Motor: instance deleted");
+            IEsp32::serial_println("Motor: instance deleted");
         }
 
     private:
-        short    type;
-        Entradas running;
+        uint8_t   type;
+        Entradas  running;
+        Salidas   pinonoff;
+
+        static constexpr uint8_t PIN_VENT_RUNNING  = 33;
+        static constexpr uint8_t PIN_VENT_ONOFF    = 14;
 };
 
 

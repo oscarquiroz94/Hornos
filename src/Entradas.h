@@ -1,46 +1,53 @@
 #ifndef __INPUTS
 #define __INPUTS
 
-#include "Esp32.h"
+#include "IEsp32.h"
+#include "max6675.h"
+#include "InterfazInputs.h"
 
 class Entradas
 {
     public:
-        Entradas(short tp)
+        Entradas(uint8_t name, uint8_t pin)
         {
-            type = tp;
-            Esp32::serial_print("Entradas: instance created ");
-            Esp32::serial_println(type);
+            type = name;
+            pin = pin;
+            IEsp32::serial_print("Entradas: instance created ");
+            IEsp32::serial_println((uint16_t)type);
         }
 
-        bool read(){ return false;}
+        bool read(){ return interinputs.digiread(type, pin);}
 
         ~Entradas()
         {
-            Esp32::serial_println("Entradas: instance deleted");
+            IEsp32::serial_println("Entradas: instance deleted");
         }
     private:
-        short type;
+        uint8_t type;
+        uint8_t pin;
+        InterfazInputs interinputs;
 };
 
 class SensorAnalogico
 {
     public:
-        SensorAnalogico(short tp)
+        SensorAnalogico(uint8_t tp, uint8_t SCLK, uint8_t CS, uint8_t MISO) :
+            temperatura(SCLK, CS, MISO)
         {
             type = tp;
-            Esp32::serial_print("Sensor Analogico: instance created ");
-            Esp32::serial_println(type);
+            IEsp32::serial_print("Sensor Analogico: instance created ");
+            IEsp32::serial_println((uint16_t)type);
         }
 
-        double read(){ return 0.0;}
+        double read(){ return temperatura.readCelsius();}
 
         ~SensorAnalogico()
         {
-            Esp32::serial_println("Sensor Analogico: instance deleted");
+            IEsp32::serial_println("Sensor Analogico: instance deleted");
         }
     private:
-        short type;
+        uint8_t type;
+        MAX6675 temperatura;
 };
 
 

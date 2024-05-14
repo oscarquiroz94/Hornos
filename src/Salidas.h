@@ -1,46 +1,56 @@
 #ifndef __OUTPUTS
 #define __OUTPUTS
 
-#include "Esp32.h"
+#include "IEsp32.h"
+#include "InterfazOutputs.h"
 
 class Salidas
 {
     public:
-        Salidas() = default;
-        Salidas(short tp)
+        //Salidas() = default;
+        Salidas(uint8_t tp, uint8_t pin)
         {
             type = tp;
-            Esp32::serial_print("Salidas: instance created ");
-            Esp32::serial_println(type);
+            IEsp32::serial_print("Salidas: instance created ");
+            IEsp32::serial_println((uint16_t)type);
         }
+
+        void high() {interouts.digiwrite(type, pin, true);}
+        void low()  {interouts.digiwrite(type, pin, true);}
 
         ~Salidas()
         {
-            Esp32::serial_println("Salidas: instance deleted");
+            IEsp32::serial_println("Salidas: instance deleted");
         }
     protected:
-        short type;
+        uint8_t type;
+        uint8_t pin;
+        InterfazOutputs interouts;
 };
 
-class SalidasAnalogica : public Salidas
+class SalidasAnalogica
 {
     public:
-        SalidasAnalogica(short tp) 
+        SalidasAnalogica(uint8_t name, uint8_t pindac) 
         {
-            type = tp;
-            Esp32::serial_print("Salidas Analogicas: instance created ");
-            Esp32::serial_println(type);
+            type = name;
+            pindac = pindac;
+            IEsp32::serial_print("Salidas Analogicas: instance created ");
+            IEsp32::serial_println((uint16_t)type);
         }
 
-        void set(short valor)
+        void set(uint8_t valor)
         {
-            
+            IEsp32::dac_Write(pindac, valor);
         }
 
         ~SalidasAnalogica()
         {
-            Esp32::serial_println("Salidas Analogicas: instance deleted");
+            IEsp32::serial_println("Salidas Analogicas: instance deleted");
         }
+    private:
+        uint8_t type;
+        uint8_t pindac;
 };
 
 

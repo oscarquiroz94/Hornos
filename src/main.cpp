@@ -1,11 +1,20 @@
 #include "Main.h"
-
+#include "IEsp32.h"
 #include "Manager.h"
 #include "Supervision.h"
 
+Debug       dbg;
 Horno       horno;
 Manager     manager;
 Supervision supervisor;
+
+
+#ifndef DEPLOY
+    #define SERIAL_PORT_NX "\\\\.\\COM15"   
+    SeriaLib serial_nxcom(SERIAL_PORT_NX, 115200);
+#endif
+
+extern void serial2Event();
 
 #if defined(DEPLOY) && !defined(INTEGRATED_TEST)
 void setup()
@@ -13,34 +22,90 @@ void setup()
 void setupmain()
 #endif
 {
-
+    IEsp32::serial_begin(115200);
+    IEsp32::serial2_begin(115200, 0x800001c, 16, 17);
+    
+    horno.get_instance_nextion().reset();
+    IEsp32::retardo(500);
+    horno.get_instance_nextion().send_stack(horno.get_instance_op());
 }
 
 #if defined(DEPLOY) && !defined(INTEGRATED_TEST)
 void loop()
 {
+    if (IEsp32::serial2_available()) serial2Event();
     manager.run(horno);
     supervisor.verify_all(horno);
 }
 #else
 void loopmain()
 {
+    if (IEsp32::serial2_available()) serial2Event();
     manager.run(horno);
     supervisor.verify_all(horno);
 
-    Esp32::serial_println("======================");
-
-    manager.run(horno);
-    supervisor.verify_all(horno);
-
-    Esp32::serial_println("======================");
+    //Recibir de Nextion
+    if (serial_nxcom.available()) 
+    {
+        serial_nxcom.readString(horno.get_instance_nextion().com.comando, '\n', Comunicacion::sizecomand, 30);
+        IEsp32::serial_print("FROM NX -> ");
+        IEsp32::serial_println(horno.get_instance_nextion().com.comando);
+    }
+    
+    std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(100));
+    IEsp32::serial_println("======================");
+    
 }
 #endif
 
 #ifndef DEPLOY
-int main(void)
-{
+//Taken from https://gist.github.com/vmrob/ff20420a20c59b5a98a1 VMROB
+int main() {
+    std::condition_variable cv;
+    std::mutex mutex;
+    std::deque<std::string> lines; // protected by mutex
+
     setupmain();
-    loopmain();
+
+    // thread to read from stdin
+    std::thread io{[&]{
+        std::string tmp;
+        while (true) {
+            std::getline(std::cin, tmp);
+            std::lock_guard lock{mutex};
+            lines.push_back(std::move(tmp));
+            cv.notify_one();
+        }
+    }};
+
+    // the nonblocking thread
+    std::deque<std::string> toProcess;
+    while (true) {
+        {
+            // critical section
+            std::unique_lock lock{mutex};
+            if (cv.wait_for(lock, std::chrono::seconds(0), [&]{ return !lines.empty(); })) {
+                // get a new batch of lines to process
+                std::swap(lines, toProcess);
+            }
+        }
+        if (!toProcess.empty()) {
+            //std::cout << "processing new lines..." << std::endl;
+            for (auto&& line : toProcess) {
+                // process lines received by io thread
+                //std::cout << line << std::endl;
+                strcpy(dbg.com.comando, line.data());
+                dbg.interprete();
+            }
+            toProcess.clear();
+        }
+
+        loopmain();
+
+        //std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        //std::cout << "waiting..." << std::endl;
+    }
+    io.join();
+    serial_nxcom.closeDevice();
 }
 #endif
