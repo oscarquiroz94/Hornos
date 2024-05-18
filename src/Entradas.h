@@ -8,10 +8,10 @@
 class Entradas
 {
     public:
-        Entradas(uint8_t name, uint8_t pin)
+        Entradas(uint8_t name, uint8_t pinout)
         {
             type = name;
-            pin = pin;
+            pin = pinout;
             IEsp32::serial_print("Entradas: instance created ");
             IEsp32::serial_println((uint16_t)type);
         }

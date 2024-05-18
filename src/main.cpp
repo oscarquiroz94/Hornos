@@ -14,6 +14,7 @@ Supervision supervisor;
     SeriaLib serial_nxcom(SERIAL_PORT_NX, 115200);
 #endif
 
+extern void serialEvent();
 extern void serial2Event();
 
 #if defined(DEPLOY) && !defined(INTEGRATED_TEST)
@@ -24,7 +25,8 @@ void setupmain()
 {
     IEsp32::serial_begin(115200);
     IEsp32::serial2_begin(115200, 0x800001c, 16, 17);
-    
+
+    horno.set_modes();
     horno.get_instance_nextion().reset();
     IEsp32::retardo(500);
     horno.get_instance_nextion().send_stack(horno.get_instance_op());
@@ -34,13 +36,22 @@ void setupmain()
 void loop()
 {
     if (IEsp32::serial2_available()) serial2Event();
+    if (IEsp32::serial_available()) serialEvent();
     manager.run(horno);
     supervisor.verify_all(horno);
+
+    //------
+
+    dbg.interprete(horno.get_instance_nextion(), horno.get_instance_op());
+
+    //------
+
+    IEsp32::retardo(200);
+    IEsp32::serial_println("======================");
 }
 #else
 void loopmain()
 {
-    if (IEsp32::serial2_available()) serial2Event();
     manager.run(horno);
     supervisor.verify_all(horno);
 

@@ -19,6 +19,11 @@ class Motor
         void on()  {pinonoff.high();}
         void off() {pinonoff.low();}
 
+        void set_modes()
+        {
+            pinonoff.set_mode(PIN_VENT_ONOFF, OUTPUT);
+        }
+
         bool isRunning(){return running.read();}
 
         ~Motor()

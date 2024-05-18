@@ -3,97 +3,72 @@
 
 #include "Comunicacion.h"
 #include "Operativos.h"
+#include "Nextion.h"
 
 class Debug
 {
     public:
         Debug(){}
 
-        Comunicacion com;
-        Operativos op_aux;
+        static Comunicacion com;
 
-        void interprete()
+        void interprete(Nextion& nx, Operativos& op)
         {
-            IEsp32::serial_print("DEBUG: "); 
-            IEsp32::serial_println(com.comando);
 
-            if (com.compararEqual(com.comando, "ONQ"))
+            strcpy(nx.com.comando, com.comando);
+
+            if(com.comparar(com.comando, "POW,"))
             {
-                op_aux.eventos.onquemador = true;
+                
+                char *listaValores = strtok(com.comando,",");
+
+                listaValores = strtok(NULL,",");
+                op.analogicos.potenciaQuem = (double)IEsp32::str2int(listaValores);
             }
 
-            if (com.compararEqual(com.comando, "OFFQ"))
+            if (com.compararEqual(com.comando, "ISBURNER"))
             {
-                op_aux.eventos.onquemador = false;
+                op.confirmaciones.isQuemador = true;
             }
 
-            if (com.compararEqual(com.comando, "ONF"))
+            if (com.compararEqual(com.comando, "ISNBURNER"))
             {
-                op_aux.eventos.onventilador = true;
+                op.confirmaciones.isQuemador = false;
             }
 
-            if (com.compararEqual(com.comando, "OFFF"))
+            if (com.compararEqual(com.comando, "ISFAN"))
             {
-                op_aux.eventos.onventilador = false;
+                op.confirmaciones.isVentilador = true;
             }
 
-            if (com.compararEqual(com.comando, "ONV"))
+            if (com.compararEqual(com.comando, "ISNFAN"))
             {
-                op_aux.eventos.onvalvula = true;
+                op.confirmaciones.isVentilador = false;
             }
 
-            if (com.compararEqual(com.comando, "OFFV"))
+            if (com.compararEqual(com.comando, "ISTERMO"))
             {
-                op_aux.eventos.onvalvula = false;
+                op.confirmaciones.isTermostato = true;
             }
 
-            //---------------
-
-            if (com.compararEqual(com.comando, "ISQ"))
+            if (com.compararEqual(com.comando, "ISNTERMO"))
             {
-                op_aux.confirmaciones.isQuemador = true;
+                op.confirmaciones.isTermostato = false;
             }
 
-            if (com.compararEqual(com.comando, "ISNQ"))
+            if (com.compararEqual(com.comando, "ISALARM"))
             {
-                op_aux.confirmaciones.isQuemador = false;
+                op.confirmaciones.isAlarma = true;
             }
 
-            if (com.compararEqual(com.comando, "ISV"))
+            if (com.compararEqual(com.comando, "ISNALARM"))
             {
-                op_aux.confirmaciones.isVentilador = true;
-            }
-
-            if (com.compararEqual(com.comando, "ISNV"))
-            {
-                op_aux.confirmaciones.isVentilador = false;
-            }
-
-            if (com.compararEqual(com.comando, "IST"))
-            {
-                op_aux.confirmaciones.isTermostato = true;
-            }
-
-            if (com.compararEqual(com.comando, "ISNT"))
-            {
-                op_aux.confirmaciones.isTermostato = false;
-            }
-
-            if (com.compararEqual(com.comando, "ISA"))
-            {
-                op_aux.confirmaciones.isAlarma = true;
-            }
-
-            if (com.compararEqual(com.comando, "ISNA"))
-            {
-                op_aux.confirmaciones.isAlarma = false;
+                op.confirmaciones.isAlarma = false;
             }
             
             memset(com.comando, 0, com.sizecomand);
         }
 
-        Operativos& get_instance_op() {return op_aux;} 
-        
         ~Debug(){}
 
 };

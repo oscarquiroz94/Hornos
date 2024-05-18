@@ -35,8 +35,29 @@ class IEsp32
 
         //----------------
 
+        static inline bool serial_available()
+        {
+#ifdef DEPLOY
+            return Serial.available();
+#else
+            return true;
+#endif
+        }
+
+        //-----------------
+
+        static inline int serial_read()
+        {
+#ifdef DEPLOY
+            return Serial.read();
+#else
+            return 0;
+#endif
+        }
+
+        //----------------
         template <class TipodatoSerial>     
-        static inline void serial_print(const TipodatoSerial text)
+        static inline void serial_print_shall(const TipodatoSerial text)
         {
 #ifdef DEPLOY
             Serial.print(text);
@@ -45,15 +66,39 @@ class IEsp32
 #endif
         }
 
+        template <class TipodatoSerial>     
+        static inline void serial_print(const TipodatoSerial text)
+        {
+#ifdef DEBUG_INFO
+#ifdef DEPLOY
+            Serial.print(text);
+#else
+            std::cout << text;
+#endif
+#endif
+        }
+
         //----------------
 
         template <class TipodatoSerial>     
-        static inline void serial_println(const TipodatoSerial text)
+        static inline void serial_println_shall(const TipodatoSerial text)
         {
 #ifdef DEPLOY
             Serial.println(text);
 #else
             std::cout << text << std::endl;
+#endif
+        }
+
+        template <class TipodatoSerial>     
+        static inline void serial_println(const TipodatoSerial text)
+        {
+#ifdef DEBUG_INFO
+#ifdef DEPLOY
+            Serial.println(text);
+#else
+            std::cout << text << std::endl;
+#endif
 #endif
         }
 
@@ -76,6 +121,17 @@ class IEsp32
             return Serial2.available();
 #else
             return true;
+#endif
+        }
+
+        //----------------
+
+        static inline int serial2_read()
+        {
+#ifdef DEPLOY
+            return Serial2.read();
+#else
+            return 0;
 #endif
         }
 
@@ -125,8 +181,17 @@ class IEsp32
         //
         //*************************** PINOUT ********************
         //
-        static bool digital_Read(const uint8_t pin)
+        static bool digital_Read(const uint8_t name, const uint8_t pin)
         {
+#ifdef SHOW_IO
+            uint16_t name16 = (uint16_t)name;
+            uint16_t pin16 = (uint16_t)pin;
+            if(name16 == IDENT::INQUEMRUN)       {serial_print_shall("Is Quemador,   pin: "); serial_print_shall(pin16);serial_print_shall(" val: "); serial_println_shall(digitalRead(pin));}
+            else if(name16 == IDENT::INVENTRUN)  {serial_print_shall("Is Ventilador, pin: "); serial_print_shall(pin16);serial_print_shall(" val: "); serial_println_shall(digitalRead(pin));}
+            else if(name16 == IDENT::TERMOSTATO) {serial_print_shall("Is Termostato, pin: "); serial_print_shall(pin16);serial_print_shall(" val: "); serial_println_shall(digitalRead(pin));}  
+            else if(name16 == IDENT::INQUEMOK)   {serial_print_shall("Is Alarma,     pin: "); serial_print_shall(pin16);serial_print_shall(" val: "); serial_println_shall(digitalRead(pin));}
+            else {serial_print_shall("*** DIGIREAD DESCONOCIDO **"); serial_println_shall(name16);}
+#endif
 #ifdef DEPLOY
             return digitalRead(pin);
 #else
@@ -138,27 +203,33 @@ class IEsp32
 
         static void digital_Write(const uint8_t name, const uint8_t pin, const uint8_t state)
         {
-#ifdef DEPLOY
-            digitalWrite(pin, state);
-#else
 #ifdef SHOW_IO
             uint16_t name16 = (uint16_t)name;
             uint16_t pin16 = (uint16_t)pin;
             uint16_t val16 = (uint16_t)state;
-            if(name16 == IDENT::OUTVALVULA) {serial_print("Valvula, pin: "); serial_print(pin16); serial_print(" val: "); serial_println(val16);}
-            else if(name16 == IDENT::OUTROJA) {serial_print("Baliza roja, pin: "); serial_print(pin16); serial_print(" val: "); serial_println(val16);}
-            else if(name16 == IDENT::OUTVERDE) {serial_print("Baliza verde, pin: "); serial_print(pin16); serial_print(" val: "); serial_println(val16);}  
-            else if(name16 == IDENT::OUTVENT) {serial_print("Ventilador, pin: "); serial_print(pin16); serial_print(" val: "); serial_println(val16);}
-            else if(name16 == IDENT::OUTQUEM) {serial_print("Quemador, pin: "); serial_print(pin16); serial_print(" val: "); serial_println(val16);}
-            else {serial_print("*** DIGIWRITE DESCONOCIDO **"); serial_println(name16);}
+            if(name16 == IDENT::OUTVALVULA)    {serial_print_shall("     Valvula,      pin: "); serial_print_shall(pin16); serial_print_shall(" val: "); serial_println_shall(val16);}
+            else if(name16 == IDENT::OUTROJA)  {serial_print_shall("     Baliza roja,  pin: "); serial_print_shall(pin16); serial_print_shall(" val: "); serial_println_shall(val16);}
+            else if(name16 == IDENT::OUTVERDE) {serial_print_shall("     Baliza verde, pin: "); serial_print_shall(pin16); serial_print_shall(" val: "); serial_println_shall(val16);}  
+            else if(name16 == IDENT::OUTVENT)  {serial_print_shall("     Ventilador,   pin: "); serial_print_shall(pin16); serial_print_shall(" val: "); serial_println_shall(val16);}
+            else if(name16 == IDENT::OUTQUEM)  {serial_print_shall("     Quemador,     pin: "); serial_print_shall(pin16); serial_print_shall(" val: "); serial_println_shall(val16);}
+            else {serial_print_shall("*** DIGIWRITE DESCONOCIDO **"); serial_println_shall(name16);}
 #endif
+#ifdef DEPLOY
+            digitalWrite(pin, state);
 #endif
         }
 
         //-----------------
 
-        static void dac_Write(const uint8_t pin, const uint8_t value)
+        static void dac_Write(const uint8_t name, const uint8_t pin, const uint8_t value)
         {
+#ifdef SHOW_IO
+            uint16_t name16 = (uint16_t)name;
+            uint16_t pin16 = (uint16_t)pin;
+            uint16_t val16 = (uint16_t)value;   
+            if(name16 == IDENT::POWCOMBUST)    {serial_print_shall("     Pow Quemador, pin: "); serial_print_shall(pin16); serial_print_shall(" val: "); serial_println_shall(val16);}
+            else {serial_print_shall("*** DIGIWRITE DESCONOCIDO **"); serial_println_shall(name16);}
+#endif
 #ifdef DEPLOY
             return dacWrite(pin, value);
 #else

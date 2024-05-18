@@ -16,7 +16,7 @@ class InterfazInputs
         bool digiread(const uint8_t name, const uint8_t pin)
         {
 #ifdef DEPLOY
-            return IEsp32::digital_Read(pin)
+            return IEsp32::digital_Read(name, pin);
 #else
             switch (name)
             {

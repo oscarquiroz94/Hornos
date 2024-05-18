@@ -12,8 +12,8 @@
 //***********************************************************
 
 //#define UNIT_TEST
-#define EMULATION
-//#define DEPLOY
+//#define EMULATION
+#define DEPLOY
 
 //***********************************************************
 
@@ -30,4 +30,24 @@
 
 
 #define SHOW_IO
-#define OUTFROM_CONSOLE
+//#define DEBUG_INFO
+
+
+//************************************************************
+//* COMANDOS NEXTION
+// BURNER
+// FAN
+// VALVE
+// STOPRAMPA
+// RUNTIMER
+// SETPOINT,150
+// TIMERAMP,100
+// TIMER,50
+// ISBURNER
+// ISNBURNER
+// ISFAN
+// ISNFAN
+// ISTERMO
+// ISNTERMO
+// ISALARM
+// ISNALARM

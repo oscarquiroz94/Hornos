@@ -1,10 +1,43 @@
 #include "Comunicacion.h"
 #include "IEsp32.h"
+#include "Debug.h"
 
+
+#ifdef DEPLOY
 void serial2Event()
 {
 
 }
+
+void serialEvent()
+{
+
+    uint8_t i=0;
+    char caracter;
+    while (IEsp32::serial_available()){
+        caracter = IEsp32::serial_read();
+        
+        if (!isAlphaNumeric(caracter) && caracter != ','){continue;}
+
+        if(i < (uint8_t)(sizeof(Debug::com.comando)/sizeof(Debug::com.comando[0]))-1)
+        {
+            Debug::com.comando[i] = caracter;
+            i++;
+        }
+        if(caracter == '\0')break;
+        IEsp32::retardo(2);
+    }
+    
+    //Importante para la logica
+    Debug::com.comando[i] = '\n';
+
+    if (!Debug::com.compararEqual(Debug::com.comando, ""))
+    {
+        IEsp32::serial_print_shall("DEBUG: "); 
+        IEsp32::serial_println_shall(Debug::com.comando);
+    }
+}
+#endif
 
 int Comunicacion::longitud(const char *cadena)
 {

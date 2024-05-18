@@ -47,8 +47,8 @@ float MAX6675::readCelsius(void) {
 
   if (v & 0x4) {
     // uh oh, no thermocouple attached!
-    return NAN;
-    // return -100;
+    //return NAN;
+    return -1;
   }
 
   v >>= 3;

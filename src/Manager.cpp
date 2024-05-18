@@ -128,7 +128,9 @@ void Manager::accion_control(Horno& horno)
     if (!op->confirmaciones.isQuemador) return;
 
     pid->set_temperatura_deseada(100.0);
-    op->analogicos.potenciaQuem = pid->regular();  
+
+    //! Deshabilitado para testing Etapa 3
+    //op->analogicos.potenciaQuem = pid->regular();  
 }
 
 void Manager::accion_rampa(Horno& horno)
@@ -139,6 +141,8 @@ void Manager::accion_rampa(Horno& horno)
 
     if (op == nullptr) return;
     if (!op->confirmaciones.isQuemador) return;
+
+    //ToDo: Cronometrar eventos de setpoint
 }
 
 void Manager::accion_valvula(Horno& horno)

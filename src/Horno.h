@@ -61,6 +61,14 @@ class Horno
             
         }
 
+        void set_modes()
+        {
+            get_instance_quemador()->set_modes();
+            get_instance_motor()->set_modes();
+            get_instance_baliza().set_modes();
+            valvula.set_mode(PIN_VALVULA_ONOFF, OUTPUT);
+        }
+
         ~Horno()
         {
             IEsp32::serial_println("Horno: instance deleted");

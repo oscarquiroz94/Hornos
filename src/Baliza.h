@@ -26,7 +26,11 @@ class Baliza
             balizaRoja.high();
         }
 
-        
+        void set_modes()
+        {
+            balizaRoja.set_mode(PIN_BALIZAROJA, OUTPUT);
+            balizaVerde.set_mode(PIN_BALIZAVERDE, OUTPUT);
+        }
 
         ~Baliza()
         {

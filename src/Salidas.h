@@ -8,22 +8,46 @@ class Salidas
 {
     public:
         //Salidas() = default;
-        Salidas(uint8_t tp, uint8_t pin)
+        Salidas(uint8_t tipo, uint8_t pinout)
         {
-            type = tp;
+            tp = tipo;
+            pin = pinout;
             IEsp32::serial_print("Salidas: instance created ");
-            IEsp32::serial_println((uint16_t)type);
+            switch (tp)
+            {
+            case IDENT::OUTVALVULA :
+                IEsp32::serial_print(" OUT valvula,");
+                break;
+            case IDENT::OUTROJA :
+                IEsp32::serial_print(" OUT Baliza roja,");
+                break;
+            case IDENT::OUTVERDE :
+                IEsp32::serial_print(" OUT Baliza verde,");
+                break;
+            case IDENT::OUTVENT :
+                IEsp32::serial_print(" OUT Ventilador,");
+                break;
+            case IDENT::OUTQUEM :
+                IEsp32::serial_print(" OUT Quemador,");
+                break;
+            default:
+                break;
+            }
+            
+            IEsp32::serial_print(" pin ");
+            IEsp32::serial_println(pin);
         }
 
-        void high() {interouts.digiwrite(type, pin, true);}
-        void low()  {interouts.digiwrite(type, pin, true);}
+        void high() { interouts.digiwrite(tp, pin, true);}
+        void low()  { interouts.digiwrite(tp, pin, false);}
+        void set_mode(uint8_t pin, uint8_t mode) {pinMode(pin, mode);}
 
         ~Salidas()
         {
             IEsp32::serial_println("Salidas: instance deleted");
         }
     protected:
-        uint8_t type;
+        uint8_t tp;
         uint8_t pin;
         InterfazOutputs interouts;
 };
@@ -31,17 +55,17 @@ class Salidas
 class SalidasAnalogica
 {
     public:
-        SalidasAnalogica(uint8_t name, uint8_t pindac) 
+        SalidasAnalogica(uint8_t name, uint8_t pinoutdac) 
         {
             type = name;
-            pindac = pindac;
+            pindac = pinoutdac;
             IEsp32::serial_print("Salidas Analogicas: instance created ");
             IEsp32::serial_println((uint16_t)type);
         }
 
         void set(uint8_t valor)
         {
-            IEsp32::dac_Write(pindac, valor);
+            IEsp32::dac_Write(type, pindac, valor);
         }
 
         ~SalidasAnalogica()
