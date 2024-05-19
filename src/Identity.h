@@ -37,4 +37,9 @@ enum IDENT
     MAXCS2      = 4
 };
 
+enum TemposNames
+{
+    PRESION_TC
+};
+
 #endif

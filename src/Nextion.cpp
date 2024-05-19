@@ -69,35 +69,66 @@ void Nextion::receive(Operativos& op)
 
     if(com.comparar(com.comando, "RAMPA,"))
     {
+        if (!op.confirmaciones.isQuemador) 
+        {
+            //ToDo: poner mensaje de aviso en Nextion
+            return;
+        }
+
         //Setear con este evento para no esperar TIMERAMP
         op.analogicos.tiemporampa = 0;
         op.eventos.onramp = true;
-
-        char *listaValores = strtok(com.comando,",");
-
-        for(uint8_t i = 0; i < 4; i++)
+    
+#ifndef DEPLOY
+        try
         {
-            listaValores = strtok(NULL,",");
-            op.analogicos.arrayTemperaturas[i] = IEsp32::str2int(listaValores);
-        }
+#endif
+            char *listaValores = strtok(com.comando,",");
 
-        for(uint8_t i = 0; i < 4; i++)
-        {
-            listaValores = strtok(NULL,",");
-            op.analogicos.arrayTiempos[i] = IEsp32::str2int(listaValores);
-        }
+            // RAMPA,160,140,120,100,0,10,20,30,160,140,120,100,0,10,20,30
+            // arrayTemperaturas[8] = {100, 120, 140, 160, 100, 120, 140, 160};
+            // arrayTiempos[8] = {0, 10, 20, 30, 0, 10, 20, 30};
+            //---------------
 
-        for(uint8_t i = 4; i < 8; i++)
-        {
-            listaValores = strtok(NULL,",");
-            op.analogicos.arrayTemperaturas[i] = IEsp32::str2int(listaValores);
-        }
+            for(uint8_t i = 0; i < 4; i++)
+            {
+                listaValores = strtok(NULL,",");
+                op.analogicos.arrayTemperaturas[i] = IEsp32::str2int(listaValores);
+            }
 
-        for(uint8_t i = 4; i < 8; i++)
-        {
-            listaValores = strtok(NULL,",");
-            op.analogicos.arrayTiempos[i] = IEsp32::str2int(listaValores);
+            for(uint8_t i = 0; i < 4; i++)
+            {
+                listaValores = strtok(NULL,",");
+                op.analogicos.arrayTiempos[i] = IEsp32::str2int(listaValores);
+            }
+
+            //----------------
+
+            for(uint8_t i = 4; i < 8; i++)
+            {
+                listaValores = strtok(NULL,",");
+                op.analogicos.arrayTemperaturas[i] = IEsp32::str2int(listaValores);
+            }
+
+            for(uint8_t i = 4; i < 8; i++)
+            {
+                listaValores = strtok(NULL,",");
+                op.analogicos.arrayTiempos[i] = IEsp32::str2int(listaValores);
+            }
+
+#ifndef DEPLOY
         }
+        catch(const std::exception& e)
+        {
+            std::cout << std::endl;
+            std::cout << "*********** ERROR FATAL ************\n";
+            std::cerr << e.what() << '\n';
+            std::cout << "************************************\n";
+            std::cout << std::endl;
+        }
+#endif
+
+        
 
     }
 

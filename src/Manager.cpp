@@ -127,7 +127,7 @@ void Manager::accion_control(Horno& horno)
     if (pid == nullptr) return;
     if (!op->confirmaciones.isQuemador) return;
 
-    pid->set_temperatura_deseada(100.0);
+    pid->set_temperatura_deseada(op->analogicos.setpoint);
 
     //! Deshabilitado para testing Etapa 3
     //op->analogicos.potenciaQuem = pid->regular();  
@@ -138,11 +138,22 @@ void Manager::accion_rampa(Horno& horno)
     IEsp32::serial_println("accion rampa");
 
     Operativos* op = &horno.get_instance_op();
+    Control* pid = &horno.get_instace_pid();
 
     if (op == nullptr) return;
+    if (pid == nullptr) return;
     if (!op->confirmaciones.isQuemador) return;
 
-    //ToDo: Cronometrar eventos de setpoint
+    for (uint8_t i = 0; i < 8; i++)
+    {
+        if (op->analogicos.tiemporampa == op->analogicos.arrayTiempos[i])
+        {
+            pid->set_temperatura_deseada((double)op->analogicos.arrayTemperaturas[i]);
+        }
+    }
+
+    //! Deshabilitado para testing Etapa 3
+    //op->analogicos.potenciaQuem = pid->regular(); 
 }
 
 void Manager::accion_valvula(Horno& horno)

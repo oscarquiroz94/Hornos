@@ -105,8 +105,15 @@ int main() {
             for (auto&& line : toProcess) {
                 // process lines received by io thread
                 //std::cout << line << std::endl;
-                strcpy(dbg.com.comando, line.data());
-                dbg.interprete();
+                strcpy(Debug::com.comando, line.data());
+
+                if (!Debug::com.compararEqual(Debug::com.comando, ""))
+                {
+                    IEsp32::serial_print_shall("DEBUG: "); 
+                    IEsp32::serial_println_shall(Debug::com.comando);
+                }
+
+                dbg.interprete(horno.get_instance_nextion(), horno.get_instance_op());
             }
             toProcess.clear();
         }

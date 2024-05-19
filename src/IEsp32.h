@@ -15,6 +15,12 @@
     #include <deque>
     #include <condition_variable>
     extern SeriaLib   serial_nxcom;
+
+    #define HIGH   0x1
+    #define LOW    0x0
+    #define INPUT  0x0
+    #define OUTPUT 0x1
+    #define INPUT_PULLUP 0x2
 #else
     #include <Arduino.h>
 #endif
@@ -239,6 +245,8 @@ class IEsp32
 
 
         //******************** DUMMIES *********************
+
+
         static inline long str2int(const char* txt)
         {
 #ifdef DEPLOY
@@ -257,6 +265,41 @@ class IEsp32
 #else
             std::this_thread::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(t));
 #endif
+        }
+
+        //--------------------
+
+        static inline unsigned long millisec() 
+        {
+#ifdef DEPLOY
+            return millis();
+#else   
+            auto duration = std::chrono::system_clock::now().time_since_epoch();
+            auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+            return millis;
+#endif
+        }
+
+        //---------------------
+
+        static inline unsigned long microsec() 
+        {
+#ifdef DEPLOY
+            return micros();
+#else   
+            auto duration = std::chrono::system_clock::now().time_since_epoch();
+            auto micros = std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
+            return micros;
+#endif
+        }
+
+        //----------------------
+
+        static inline void pinmode(uint8_t pin, uint8_t dir)
+        {
+#ifdef DEPLOY
+            pinMode(pin, dir);
+#endif      
         }
 };
 

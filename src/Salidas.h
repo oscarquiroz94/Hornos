@@ -35,12 +35,12 @@ class Salidas
             }
             
             IEsp32::serial_print(" pin ");
-            IEsp32::serial_println(pin);
+            IEsp32::serial_println((uint16_t)pin);
         }
 
         void high() { interouts.digiwrite(tp, pin, true);}
         void low()  { interouts.digiwrite(tp, pin, false);}
-        void set_mode(uint8_t pin, uint8_t mode) {pinMode(pin, mode);}
+        void set_mode(uint8_t pin, uint8_t mode) { IEsp32::pinmode(pin, mode); }
 
         ~Salidas()
         {
