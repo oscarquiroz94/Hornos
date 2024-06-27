@@ -62,7 +62,7 @@ class IEsp32
         }
 
         //----------------
-        template <class TipodatoSerial>     
+        template <class TipodatoSerial> 
         static inline void serial_print_shall(const TipodatoSerial text)
         {
 #ifdef DEPLOY
@@ -189,17 +189,19 @@ class IEsp32
         //
         static bool digital_Read(const uint8_t name, const uint8_t pin)
         {
+            bool state = !digitalRead(pin);
 #ifdef SHOW_IO
             uint16_t name16 = (uint16_t)name;
             uint16_t pin16 = (uint16_t)pin;
-            if(name16 == IDENT::INQUEMRUN)       {serial_print_shall("Is Quemador,   pin: "); serial_print_shall(pin16);serial_print_shall(" val: "); serial_println_shall(digitalRead(pin));}
-            else if(name16 == IDENT::INVENTRUN)  {serial_print_shall("Is Ventilador, pin: "); serial_print_shall(pin16);serial_print_shall(" val: "); serial_println_shall(digitalRead(pin));}
-            else if(name16 == IDENT::TERMOSTATO) {serial_print_shall("Is Termostato, pin: "); serial_print_shall(pin16);serial_print_shall(" val: "); serial_println_shall(digitalRead(pin));}  
-            else if(name16 == IDENT::INQUEMOK)   {serial_print_shall("Is Alarma,     pin: "); serial_print_shall(pin16);serial_print_shall(" val: "); serial_println_shall(digitalRead(pin));}
+            
+            if(name16 == IDENT::INQUEMRUN)       {serial_print_shall("Is Quemador,   pin: "); serial_print_shall(pin16);serial_print_shall(" val: "); serial_println_shall(state);}
+            else if(name16 == IDENT::INVENTRUN)  {serial_print_shall("Is Ventilador, pin: "); serial_print_shall(pin16);serial_print_shall(" val: "); serial_println_shall(state);}
+            else if(name16 == IDENT::TERMOSTATO) {serial_print_shall("Is Termostato, pin: "); serial_print_shall(pin16);serial_print_shall(" val: "); serial_println_shall(state);}  
+            else if(name16 == IDENT::INQUEMOK)   {serial_print_shall("Is Alarma,     pin: "); serial_print_shall(pin16);serial_print_shall(" val: "); serial_println_shall(state);}
             else {serial_print_shall("*** DIGIREAD DESCONOCIDO **"); serial_println_shall(name16);}
 #endif
 #ifdef DEPLOY
-            return digitalRead(pin);
+            return state;
 #else
             return false;
 #endif
@@ -232,14 +234,13 @@ class IEsp32
 #ifdef SHOW_IO
             uint16_t name16 = (uint16_t)name;
             uint16_t pin16 = (uint16_t)pin;
-            uint16_t val16 = (uint16_t)value;   
-            if(name16 == IDENT::POWCOMBUST)    {serial_print_shall("     Pow Quemador, pin: "); serial_print_shall(pin16); serial_print_shall(" val: "); serial_println_shall(val16);}
-            else {serial_print_shall("*** DIGIWRITE DESCONOCIDO **"); serial_println_shall(name16);}
+            uint16_t val16 = (uint16_t)value;                     
+            if(name16 == IDENT::POWCOMBUST)     {serial_print_shall("     Pow Combust,  pin: "); serial_print_shall(pin16); serial_print_shall(" val: "); serial_println_shall(val16);}
+            else if(name16 == IDENT::POWRESIST) {serial_print_shall("     Pow Resist,   pin: "); serial_print_shall(pin16); serial_print_shall(" val: "); serial_println_shall(val16);}
+            else {serial_print_shall("*** DACWRITE DESCONOCIDO **"); serial_println_shall(name16);}
 #endif
 #ifdef DEPLOY
             return dacWrite(pin, value);
-#else
-            
 #endif
         }
 
@@ -299,6 +300,8 @@ class IEsp32
         {
 #ifdef DEPLOY
             pinMode(pin, dir);
+            serial_print_shall("pin: "); serial_print_shall((uint16_t)pin);
+            serial_print_shall(" mode: "); serial_println_shall((uint16_t)dir);
 #endif      
         }
 };

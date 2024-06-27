@@ -4,14 +4,38 @@
 
 
 #ifdef DEPLOY
+//* Eventos seriales de Nextion
 void serial2Event()
 {
+    // uint8_t i=0;
+    // char caracter;
+    // while (IEsp32::serial2_available()){
+    //     caracter = IEsp32::serial2_read();
+        
+    //     if (!isAlphaNumeric(caracter) && caracter != ','){continue;}
 
+    //     if(i < (uint8_t)(sizeof(Nextion::com.comando)/sizeof(Nextion::com.comando[0]))-1)
+    //     {
+    //         Nextion::com.comando[i] = caracter;
+    //         i++;
+    //     }
+    //     if(caracter == '\0')break;
+    //     IEsp32::retardo(2);
+    // }
+    
+    // //Importante para la logica
+    // Nextion::com.comando[i] = '\n';
+
+    // if (!Nextion::com.compararEqual(Nextion::com.comando, ""))
+    // {
+    //     IEsp32::serial_print_shall("FROM NX -> "); 
+    //     IEsp32::serial_println_shall(Nextion::com.comando);
+    // }
 }
 
+//* Eventos seriales de debug
 void serialEvent()
 {
-
     uint8_t i=0;
     char caracter;
     while (IEsp32::serial_available()){
@@ -33,10 +57,11 @@ void serialEvent()
 
     if (!Debug::com.compararEqual(Debug::com.comando, ""))
     {
-        IEsp32::serial_print_shall("DEBUG: "); 
+        IEsp32::serial_print_shall("FROM DEBUG -> "); 
         IEsp32::serial_println_shall(Debug::com.comando);
     }
 }
+
 #endif
 
 int Comunicacion::longitud(const char *cadena)

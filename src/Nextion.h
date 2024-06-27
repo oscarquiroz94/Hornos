@@ -13,7 +13,7 @@ class Nextion
             IEsp32::serial_println("Nextion: instance created");
         }
 
-        Comunicacion com;
+        static Comunicacion com;
         
         void receive(Operativos& op);
         void send(Operativos& op);

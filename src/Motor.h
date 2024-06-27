@@ -22,6 +22,7 @@ class Motor
         void set_modes()
         {
             pinonoff.set_mode(PIN_VENT_ONOFF, OUTPUT);
+            running.set_mode(PIN_VENT_RUNNING, INPUT);
         }
 
         bool isRunning(){return running.read();}

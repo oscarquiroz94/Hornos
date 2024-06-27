@@ -17,6 +17,8 @@ class Entradas
         }
 
         bool read(){ return interinputs.digiread(type, pin);}
+        void set_mode(uint8_t pin, uint8_t mode) { IEsp32::pinmode(pin, mode); }
+
 
         ~Entradas()
         {

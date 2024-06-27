@@ -109,7 +109,7 @@ int main() {
 
                 if (!Debug::com.compararEqual(Debug::com.comando, ""))
                 {
-                    IEsp32::serial_print_shall("DEBUG: "); 
+                    IEsp32::serial_print_shall("FROM DEBUG -> "); 
                     IEsp32::serial_println_shall(Debug::com.comando);
                 }
 

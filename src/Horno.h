@@ -67,6 +67,7 @@ class Horno
             get_instance_motor()->set_modes();
             get_instance_baliza().set_modes();
             valvula.set_mode(PIN_VALVULA_ONOFF, OUTPUT);
+            termostato.set_mode(PIN_TERMOSTATO, INPUT);
         }
 
         ~Horno()

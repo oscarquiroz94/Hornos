@@ -53,7 +53,7 @@ class Operativos
         struct Stack
         {
             bool ventilacionEnable = true;
-            bool resistivoEnable = false;
+            bool resistivoEnable = true;
             uint16_t lastkey = 920;
 
             void save()

@@ -53,6 +53,8 @@ class Quemador
         void set_modes()
         {
             pinonoff.set_mode(PIN_QUEM_ONOFF, OUTPUT);
+            alarma.set_mode(PIN_QUEM_ALARMA, INPUT);
+            running.set_mode(PIN_QUEM_RUNNING, INPUT);
         }
 
         bool is_running() {return running.read();}
@@ -86,9 +88,20 @@ class QuemadorResistivo : public Quemador
             IEsp32::serial_println((uint16_t)type);
         }
 
-        void set_potencia(double valor) override 
+        void set_potencia(double potencia) override 
         {
             static SalidasAnalogica resistiva(IDENT::POWRESIST, PIN_QUEM_POW);
+
+            if (potencia < 0.0){potencia = 0.0;}
+            if (potencia > 100.0){potencia = 100.0;}
+
+            double min_porcent = 0.0;
+            double max_porcent = 100.0;
+
+            uint8_t bvel = (uint8_t)map_double
+                (potencia, 0, 100, min_porcent*(255/100.0), max_porcent*(255/100.0));
+            
+            resistiva.set(bvel);
         }  
 
         ~QuemadorResistivo()

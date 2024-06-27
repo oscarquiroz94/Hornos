@@ -1,5 +1,6 @@
 #include "Nextion.h"
 
+Comunicacion Nextion::com;
 
 void Nextion::send_stack(Operativos& op)
 {

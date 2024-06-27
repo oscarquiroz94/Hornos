@@ -180,6 +180,6 @@ void Manager::accion_baliza(Horno& horno)
     IEsp32::serial_println("accion baliza");
     
     //Logica para accionar baliza
-    Baliza* baliza = &horno.get_instance_baliza();
+    //Baliza* baliza = &horno.get_instance_baliza();
 }
 
