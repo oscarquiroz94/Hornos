@@ -189,6 +189,7 @@ class IEsp32
         //
         static bool digital_Read(const uint8_t name, const uint8_t pin)
         {
+#ifdef DEPLOY
             bool state = !digitalRead(pin);
 #ifdef SHOW_IO
             uint16_t name16 = (uint16_t)name;
@@ -200,7 +201,6 @@ class IEsp32
             else if(name16 == IDENT::INQUEMOK)   {serial_print_shall("Is Alarma,     pin: "); serial_print_shall(pin16);serial_print_shall(" val: "); serial_println_shall(state);}
             else {serial_print_shall("*** DIGIREAD DESCONOCIDO **"); serial_println_shall(name16);}
 #endif
-#ifdef DEPLOY
             return state;
 #else
             return false;

@@ -31,9 +31,22 @@ class Horno
         Entradas&   get_instance_termostato() {return termostato;}
         Salidas&    get_instance_valvula()    {return valvula;}
         Baliza&     get_instance_baliza()     {return baliza;}
-        Control&    get_instace_pid()         {return pid;}
+        
         SensorAnalogico& get_instance_sensTempera()    {return sensTempera;} 
         SensorAnalogico& get_instance_sensTemperaAux() {return sensTemperaAux;} 
+
+        //ToDo: mover a factories
+        Control*  get_instace_controlador()
+        {
+            if (op.stack.controlOnOff)
+            {
+                static ControlOnOff controlador;
+                return &controlador;
+            }else
+            {
+                return nullptr;
+            }
+        }
 
         Motor* get_instance_motor()
         {
@@ -78,7 +91,7 @@ class Horno
     private:
         Operativos op;
         
-        Control    pid;
+        ControlPid pid;
         Nextion    nx;
         Entradas   termostato;  
         Salidas    valvula;

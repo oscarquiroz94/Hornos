@@ -59,7 +59,7 @@ class Nextion
             }
         }
 
-        void send_run_state(bool state)
+        void send_timer_state(bool state)
         {
             if (!state)
             {
@@ -90,6 +90,7 @@ class Nextion
 
     private:
         int first_digit(int x);
+        void guardar();
 };
 
 

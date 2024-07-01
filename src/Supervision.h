@@ -25,7 +25,8 @@ class Supervision
         void verify_alarma_quemador(Horno& horno);
         void verify_termostato(Horno& horno);
         void verify_valve(Horno& horno);
-        void verify_run(Horno& horno);
+        void verify_timer_started(Horno& horno);
+        void verify_ramp_started(Horno& horno);
 };
 
 

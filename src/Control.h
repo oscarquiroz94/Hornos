@@ -3,20 +3,45 @@
 
 #include "IEsp32.h"
 #include "Temporizador.h"
+#include "MeanFilterLib.h"
 
 class Control
 {
     public:
-        Control() : 
-            tc(false, true, TemposNames::PRESION_TC)
+        virtual void set_temperatura_deseada(double valor) { setpoint = valor; };
+
+    protected:
+        double setpoint;
+};
+
+class ControlOnOff : public Control
+{
+    public:
+
+        void regular(Operativos& op)
         {
-            IEsp32::serial_println("Control: instance created");
+            if (op.analogicos.tempera > op.analogicos.setpoint + umbral) 
+                op.eventos.onvalvula = false;
+
+            else if (op.analogicos.tempera <= op.analogicos.setpoint - umbral) 
+                op.eventos.onvalvula = true;
         }
 
-        void set_temperatura_deseada(double valor){ setpoint = valor; }
+    private:
+        double umbral = 5.0;
+};
+
+class ControlPid : public Control
+{
+    public:
+        ControlPid() : 
+            tc(false, true, TemposNames::PRESION_TC)
+        {
+            IEsp32::serial_println("ControlPid: instance created");
+        }
 
         //Porcentaje de potencia quemador
-        double regular()
+        double regular(Operativos& op)
         {
             //! Por el momento se usa temperatura emulada que empieza en cero
             pid.error = setpoint - emu.tempera;
@@ -63,15 +88,15 @@ class Control
 
         
 
-        ~Control()
+        ~ControlPid()
         {
-            IEsp32::serial_println("Control: instance deleted");
+            IEsp32::serial_println("ControlPid: instance deleted");
         }
 
     private:
 
         Temporizador tc;
-        double setpoint;
+        
         bool antiwdp;
         double accion;
 
@@ -103,7 +128,7 @@ class Control
         bool antiwindup()
         {
             //Si el error absoluto de temperatura no es cero(conservador)
-            //Y el error absoluto no esta disminuyendo (derivada no es casi cero)
+            //Y el error absoluto no esta disminuyendo (filtro no es casi cero)
             //Entonces esperar tiempo de reaccion y activar antiwindup
             if (abs(pid.error) > 3.0 && abs(pid.error - pid.error_ant) <= 0.01 )
             {

@@ -15,6 +15,14 @@ void Debug::interprete(Nextion& nx, Operativos& op)
         op.analogicos.potenciaQuem = (double)IEsp32::str2int(listaValores);
     }
 
+    if(com.comparar(com.comando, "TEMP,"))
+    {
+        char *listaValores = strtok(com.comando,",");
+
+        listaValores = strtok(NULL,",");
+        op.analogicos.tempera = (double)IEsp32::str2int(listaValores);
+    }
+
     if (com.compararEqual(com.comando, "ISBURNER"))
     {
         op_aux.confirmaciones.isQuemador = true;

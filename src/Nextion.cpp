@@ -15,6 +15,9 @@ void Nextion::send_stack(Operativos& op)
 void Nextion::send(Operativos& op)
 {
     com.send(0, "n0", (uint16_t)op.analogicos.tempera);
+
+    if (op.eventos.onramp)
+        com.send(0, "n1", (uint16_t)op.analogicos.setpoint);
 }
 
 void Nextion::receive(Operativos& op)
@@ -42,6 +45,9 @@ void Nextion::receive(Operativos& op)
     if (com.compararEqual(com.comando, "RUNTIMER"))
     {
         op.eventos.ontimer = op.eventos.ontimer == true ? false : true;
+
+        //Setear con este evento para no esperar TIMERNX
+        op.analogicos.timernx = 0;
     }
 
     if(com.comparar(com.comando, "SETPOINT,"))
@@ -50,14 +56,16 @@ void Nextion::receive(Operativos& op)
 
         listaValores = strtok(NULL,",");
         op.analogicos.setpoint = IEsp32::str2int(listaValores);
+
+        guardar();
     }
 
-    if(com.comparar(com.comando, "TIMERAMP,"))
+    if(com.comparar(com.comando, "TIMERNX,"))
     {
         char *listaValores = strtok(com.comando,",");
 
         listaValores = strtok(NULL,",");
-        op.analogicos.tiemporampa = IEsp32::str2int(listaValores);
+        op.analogicos.timernx = IEsp32::str2int(listaValores);
     }
 
     if(com.comparar(com.comando, "TIMER,"))
@@ -66,18 +74,21 @@ void Nextion::receive(Operativos& op)
 
         listaValores = strtok(NULL,",");
         op.analogicos.tiempotimer = IEsp32::str2int(listaValores);
+
+        guardar();
     }
 
     if(com.comparar(com.comando, "RAMPA,"))
     {
         if (!op.confirmaciones.isQuemador) 
         {
-            //ToDo: poner mensaje de aviso en Nextion
+            com.send("page1.t2.txt=\"Burner not running\"");
+            IEsp32::serial_println("Rampa: quemador no encendido");
             return;
         }
 
-        //Setear con este evento para no esperar TIMERAMP
-        op.analogicos.tiemporampa = 0;
+        //Setear con este evento para no esperar TIMERNX
+        op.analogicos.timernx = 0;
         op.eventos.onramp = true;
     
 #ifndef DEPLOY
@@ -153,6 +164,12 @@ void Nextion::receive(Operativos& op)
     memset(com.comando, 0, com.sizecomand);
 }
 
+void Nextion::guardar()
+{
+    com.send("page0.b5.txt=\"Guardado\"");
+    IEsp32::retardo(2000);
+    com.send("page0.b5.txt=\"\"");
+}
 void Nextion::reset()
 {
     IEsp32::serial_println("Reseteando INextion... ");

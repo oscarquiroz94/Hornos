@@ -13,13 +13,10 @@ void Manager::run(Horno& horno)
     accion_valvula(horno);
     accion_baliza(horno);
 
-    if (horno.get_instance_op().eventos.onramp) 
-    {
-        accion_rampa(horno);
-    }else
-    {
-        accion_control(horno);
-    }
+    //! Desactivar onramp automaticamente implica que la temperatura
+    //! seguira el setpoint de pantalla principal
+    if (horno.get_instance_op().eventos.onramp)  accion_rampa(horno);
+    if (horno.get_instance_op().eventos.ontimer) accion_control(horno);
     
     accion_potencia_quemador(horno);
     
@@ -37,8 +34,13 @@ void Manager::accion_lectura_temperatura(Horno& horno)
     if (sensTemp == nullptr) return;
     if (sensTempAux == nullptr) return;
 
-    op->analogicos.tempera = sensTemp->read();
-    op->analogicos.temperaAux = sensTempAux->read();
+    //op->analogicos.tempera = sensTemp->read();
+    //op->analogicos.temperaAux = sensTempAux->read();
+
+    //! Para simular incremento temperatura cuando valvula esta ON
+    if (!op->confirmaciones.isQuemador || !horno.get_instance_op().eventos.ontimer) return;
+    if (op->eventos.onvalvula) op->analogicos.tempera += 0.5;
+    else op->analogicos.tempera -= 0.5;
 }
 
 void Manager::accion_lectura_entradas(Horno& horno)
@@ -103,6 +105,67 @@ void Manager::accion_quemador(Horno& horno)
     }
 }
 
+void Manager::accion_control(Horno& horno)
+{
+    IEsp32::serial_println("accion control");
+
+    Operativos* op = &horno.get_instance_op();
+    ControlPid* pid = (ControlPid*)horno.get_instace_controlador();
+    ControlOnOff* c_onoff = (ControlOnOff*)horno.get_instace_controlador();
+
+    if (op == nullptr) return;
+    if (pid == nullptr) return;
+
+    //----------------
+
+    if (!op->confirmaciones.isQuemador) return;
+
+    if (op->analogicos.timernx == op->analogicos.tiempotimer )
+    {
+        op->eventos.onvalvula = false;
+        op->eventos.ontimer = false;
+    }
+
+    pid->set_temperatura_deseada(op->analogicos.setpoint);
+
+    //! Deshabilitado para testing Etapa 3 -> COBRAR !!!
+    //op->analogicos.potenciaQuem = pid->regular(*op);  
+
+    // Control ON OFF se realiza con la valvula de alto fuego
+    c_onoff->regular(*op);
+}
+
+void Manager::accion_rampa(Horno& horno)
+{
+    IEsp32::serial_println("accion rampa");
+
+    Operativos* op = &horno.get_instance_op();
+    ControlPid* pid = (ControlPid*)horno.get_instace_controlador();
+    ControlOnOff* c_onoff = (ControlOnOff*)horno.get_instace_controlador();
+
+    if (op == nullptr) return;
+    if (pid == nullptr) return;
+
+    //------------------
+
+    if (!op->confirmaciones.isQuemador) return;
+
+    for (uint8_t i = 0; i < 8; i++)
+    {
+        if (op->analogicos.timernx == op->analogicos.arrayTiempos[i])
+        {
+            op->analogicos.setpoint = (double)op->analogicos.arrayTemperaturas[i];
+            pid->set_temperatura_deseada(op->analogicos.setpoint);
+        }
+    }
+
+    //! Deshabilitado para testing Etapa 3 -> COBRAR !!!
+    //op->analogicos.potenciaQuem = pid->regular(*op); 
+
+    // Control ON OFF se realiza con la valvula de alto fuego
+    c_onoff->regular(*op);
+}
+
 void Manager::accion_potencia_quemador(Horno& horno)
 {
     IEsp32::serial_println("accion potencia quemador");
@@ -116,46 +179,6 @@ void Manager::accion_potencia_quemador(Horno& horno)
     quemador->set_potencia(op->analogicos.potenciaQuem); //Porcentaje
 }
 
-void Manager::accion_control(Horno& horno)
-{
-    IEsp32::serial_println("accion control");
-
-    Operativos* op = &horno.get_instance_op();
-    Control* pid = &horno.get_instace_pid();
-
-    if (op == nullptr) return;
-    if (pid == nullptr) return;
-    if (!op->confirmaciones.isQuemador) return;
-
-    pid->set_temperatura_deseada(op->analogicos.setpoint);
-
-    //! Deshabilitado para testing Etapa 3
-    //op->analogicos.potenciaQuem = pid->regular();  
-}
-
-void Manager::accion_rampa(Horno& horno)
-{
-    IEsp32::serial_println("accion rampa");
-
-    Operativos* op = &horno.get_instance_op();
-    Control* pid = &horno.get_instace_pid();
-
-    if (op == nullptr) return;
-    if (pid == nullptr) return;
-    if (!op->confirmaciones.isQuemador) return;
-
-    for (uint8_t i = 0; i < 8; i++)
-    {
-        if (op->analogicos.tiemporampa == op->analogicos.arrayTiempos[i])
-        {
-            pid->set_temperatura_deseada((double)op->analogicos.arrayTemperaturas[i]);
-        }
-    }
-
-    //! Deshabilitado para testing Etapa 3
-    //op->analogicos.potenciaQuem = pid->regular(); 
-}
-
 void Manager::accion_valvula(Horno& horno)
 {
     IEsp32::serial_println("accion valvula");
@@ -166,13 +189,14 @@ void Manager::accion_valvula(Horno& horno)
     if (valvula == nullptr) return;
     if (op == nullptr) return;
 
-    if (op->eventos.onvalvula)
+    if (op->eventos.onvalvula && op->confirmaciones.isQuemador)
     {
         valvula->high();
     }else
     {
         valvula->low();
     }
+
 }
 
 void Manager::accion_baliza(Horno& horno)

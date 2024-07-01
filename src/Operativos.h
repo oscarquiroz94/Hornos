@@ -27,11 +27,11 @@ class Operativos
 
         struct Analogicos
         {
-            double tempera = 0.0;
+            double tempera = 70.0; //! fijado temporalmente
             double temperaAux = 0.0;
             double potenciaQuem = 0.0;
             uint16_t setpoint = 100;
-            uint16_t tiemporampa = 0;
+            uint16_t timernx = 0;
             uint32_t tiempotimer = 5;
             uint16_t arrayTemperaturas[8] = {100, 120, 140, 160, 100, 120, 140, 160};
             uint16_t arrayTiempos[8] = {0, 10, 20, 30, 0, 10, 20, 30};
@@ -54,6 +54,7 @@ class Operativos
         {
             bool ventilacionEnable = true;
             bool resistivoEnable = true;
+            bool controlOnOff = true;
             uint16_t lastkey = 920;
 
             void save()
@@ -103,7 +104,7 @@ class Operativos
             IEsp32::serial_print("Analogi tempera: "); IEsp32::serial_println(analogicos.tempera);
             IEsp32::serial_print("Analogi temperaAux: "); IEsp32::serial_println(analogicos.temperaAux);
             IEsp32::serial_print("Analogi potenciaQuem: "); IEsp32::serial_println(analogicos.potenciaQuem);
-            IEsp32::serial_print("Analogi timeramp: "); IEsp32::serial_println(analogicos.tiemporampa);
+            IEsp32::serial_print("Analogi timernx: "); IEsp32::serial_println(analogicos.timernx);
             IEsp32::serial_print("Analogi timetimer: "); IEsp32::serial_println(analogicos.tiempotimer);
             IEsp32::serial_print("Confirm isQuemador: "); IEsp32::serial_println(confirmaciones.isQuemador);
             IEsp32::serial_print("Confirm isVentilador: "); IEsp32::serial_println(confirmaciones.isVentilador);
