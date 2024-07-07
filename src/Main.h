@@ -51,3 +51,7 @@
 // ISNTERMO
 // ISALARM
 // ISNALARM
+
+
+
+#define OVERRIDE_STACK

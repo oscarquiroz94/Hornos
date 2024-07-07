@@ -23,12 +23,21 @@ void setup()
 void setupmain()
 #endif
 {
+#ifdef OVERRIDE_STACK
+    horno.get_instance_op().stack.save();
+#endif
+    horno.get_instance_op().stack.read();
+
     IEsp32::serial_begin(115200);
     IEsp32::serial2_begin(115200, 0x800001c, 16, 17);
 
     horno.set_modes();
     horno.get_instance_nextion().reset();
     IEsp32::retardo(500);
+    if (horno.get_instance_op().stack.masterkeydone)
+    {
+        horno.get_instance_nextion().com.send("page 0");
+    }
     horno.get_instance_nextion().send_stack(horno.get_instance_op());
 }
 

@@ -27,7 +27,7 @@ class Operativos
 
         struct Analogicos
         {
-            double tempera = 70.0; //! fijado temporalmente
+            double tempera = 0.0; 
             double temperaAux = 0.0;
             double potenciaQuem = 0.0;
             uint16_t setpoint = 100;
@@ -53,9 +53,12 @@ class Operativos
         struct Stack
         {
             bool ventilacionEnable = true;
-            bool resistivoEnable = true;
+            bool resistivoEnable = false;
             bool controlOnOff = true;
+            bool masterkeydone = false;
             uint16_t lastkey = 920;
+            uint32_t masterkey = 5980510;
+
 
             void save()
             {
@@ -69,7 +72,16 @@ class Operativos
                 EEPROM.put(registro, resistivoEnable);
 
                 registro += (int)sizeof(bool);
+                EEPROM.put(registro, controlOnOff);
+
+                registro += (int)sizeof(bool);
+                EEPROM.put(registro, masterkeydone);
+
+                registro += (int)sizeof(bool);
                 EEPROM.put(registro, lastkey);
+
+                registro += (int)sizeof(uint16_t);
+                EEPROM.put(registro, masterkey);
 #endif
                 IEsp32::serial_print("Stack updated");
 
@@ -88,7 +100,16 @@ class Operativos
                 EEPROM.get(registro, resistivoEnable);
 
                 registro += (int)sizeof(bool);
+                EEPROM.get(registro, controlOnOff);
+
+                registro += (int)sizeof(bool);
+                EEPROM.get(registro, masterkeydone);
+
+                registro += (int)sizeof(bool);
                 EEPROM.get(registro, lastkey);
+
+                registro += (int)sizeof(uint16_t);
+                EEPROM.get(registro, masterkey);
 #endif
             }
         } stack;

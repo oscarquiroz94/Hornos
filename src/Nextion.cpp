@@ -149,13 +149,20 @@ void Nextion::receive(Operativos& op)
         char *listaValores = strtok(com.comando,",");
 
         listaValores = strtok(NULL,",");
-        uint16_t clave = IEsp32::str2int(listaValores);
+        uint32_t clave = IEsp32::str2int(listaValores);
         uint16_t index = first_digit(clave) - 1;
         
         if(op.analogicos.clave[index] == clave) 
         {
             com.send("page 0");
             op.stack.lastkey = clave;
+            op.stack.save();
+        }
+
+        if(op.stack.masterkey == clave)
+        {
+            com.send("page 0");
+            op.stack.masterkeydone = true;
             op.stack.save();
         }
         
