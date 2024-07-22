@@ -2,8 +2,12 @@
 
 void Manager::run(Horno& horno)
 {
-    horno.get_instance_nextion().receive(horno.get_instance_op());
-    horno.get_instance_nextion().send(horno.get_instance_op());
+    horno.get_instance_nextion().receive
+        (horno.get_instance_op(), horno.get_instance_stack());
+
+    horno.get_instance_nextion().send
+        (horno.get_instance_op(), horno.get_instance_stack());
+
     horno.get_instance_op().print();
 
     accion_lectura_temperatura(horno);
@@ -34,13 +38,13 @@ void Manager::accion_lectura_temperatura(Horno& horno)
     if (sensTemp == nullptr) return;
     if (sensTempAux == nullptr) return;
 
-    //op->analogicos.tempera = sensTemp->read();
-    //op->analogicos.temperaAux = sensTempAux->read();
+    op->analogicos.tempera = sensTemp->read();
+    op->analogicos.temperaAux = sensTempAux->read();
 
-    //! Para simular incremento temperatura cuando valvula esta ON
-    if (!op->confirmaciones.isQuemador || !horno.get_instance_op().eventos.ontimer) return;
-    if (op->eventos.onvalvula) op->analogicos.tempera += 0.5;
-    else op->analogicos.tempera -= 0.5;
+    // //! Para simular incremento temperatura cuando valvula esta ON
+    // if (!op->confirmaciones.isQuemador || !horno.get_instance_op().eventos.ontimer) return;
+    // if (op->eventos.onvalvula) op->analogicos.tempera += 0.5;
+    // else op->analogicos.tempera -= 0.5;
 }
 
 void Manager::accion_lectura_entradas(Horno& horno)
@@ -56,14 +60,17 @@ void Manager::accion_lectura_entradas(Horno& horno)
     if (quemador == nullptr) return;
     if (termostato == nullptr) return;
 
+#ifndef NO_CONFIRM_AVAILABLE
     op->confirmaciones.isQuemador = quemador->is_running();
     op->confirmaciones.isAlarma = quemador->is_alarma();
     op->confirmaciones.isTermostato = termostato->read();
+#endif
 
     // Si se desactiva ventilador aun se quieren leer las otras entradas
     if (ventilador == nullptr) return;
+#ifndef NO_CONFIRM_AVAILABLE
     op->confirmaciones.isVentilador = ventilador->isRunning();
-
+#endif
     
 }
 

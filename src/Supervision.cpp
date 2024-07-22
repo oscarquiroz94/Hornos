@@ -13,13 +13,15 @@ void Supervision::verify_all(Horno& horno)
 
 void Supervision::verify_ventilador(Horno& horno)
 {
+    Operativos* op = &horno.get_instance_op();
     Motor* motor = horno.get_instance_motor();
     Nextion* nx = &horno.get_instance_nextion();
 
+    if (op == nullptr) return;
     if (motor == nullptr) return;
     if (nx == nullptr) return;
 
-    if (motor->isRunning())
+    if (op->confirmaciones.isVentilador)
     {
         nx->send_motor_state(true);
     }else

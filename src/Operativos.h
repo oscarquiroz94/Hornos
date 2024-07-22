@@ -48,72 +48,6 @@ class Operativos
             bool isAdicional = false;
         } confirmaciones;
         
-        
-
-        struct Stack
-        {
-            bool ventilacionEnable = true;
-            bool resistivoEnable = false;
-            bool controlOnOff = true;
-            bool masterkeydone = false;
-            uint16_t lastkey = 920;
-            uint32_t masterkey = 5980510;
-
-
-            void save()
-            {
-#ifdef DEPLOY
-                int registro;
-
-                registro = 0;
-                EEPROM.put(registro, ventilacionEnable);
-
-                registro += (int)sizeof(bool);
-                EEPROM.put(registro, resistivoEnable);
-
-                registro += (int)sizeof(bool);
-                EEPROM.put(registro, controlOnOff);
-
-                registro += (int)sizeof(bool);
-                EEPROM.put(registro, masterkeydone);
-
-                registro += (int)sizeof(bool);
-                EEPROM.put(registro, lastkey);
-
-                registro += (int)sizeof(uint16_t);
-                EEPROM.put(registro, masterkey);
-#endif
-                IEsp32::serial_print("Stack updated");
-
-                //print();
-            }
-
-            void read()
-            {
-#ifdef DEPLOY
-                int registro;
-
-                registro = 0;
-                EEPROM.get(registro, ventilacionEnable);
-
-                registro += (int)sizeof(bool);
-                EEPROM.get(registro, resistivoEnable);
-
-                registro += (int)sizeof(bool);
-                EEPROM.get(registro, controlOnOff);
-
-                registro += (int)sizeof(bool);
-                EEPROM.get(registro, masterkeydone);
-
-                registro += (int)sizeof(bool);
-                EEPROM.get(registro, lastkey);
-
-                registro += (int)sizeof(uint16_t);
-                EEPROM.get(registro, masterkey);
-#endif
-            }
-        } stack;
-
         void print()
         {
             IEsp32::serial_print("Eventos onventilador: "); IEsp32::serial_println(eventos.onventilador);
@@ -152,7 +86,88 @@ class Operativos
         {
             IEsp32::serial_println("Operativos: instance deleted");
         }
+};    
+
+
+class Stack
+{
+    public:
+        bool ventilacionEnable = true;
+        bool resistivoEnable = false;
+        bool controlOnOff = true;
+        bool masterkeydone = false;
+        uint16_t lastkey = 920;
+        uint32_t masterkey = 5980510;
+
+
+        void save()
+        {
+#ifdef DEPLOY
+            int registro;
+            registro = 0;
+
+            EEPROM.writeBool(registro, ventilacionEnable);
+            registro += (int)sizeof(bool);
+
+            EEPROM.writeBool(registro, resistivoEnable);
+            registro += (int)sizeof(bool);
+
+            EEPROM.writeBool(registro, controlOnOff);
+            registro += (int)sizeof(bool);
+
+            EEPROM.writeBool(registro, masterkeydone);
+            registro += (int)sizeof(bool);
+
+            EEPROM.writeUShort(registro, lastkey);
+            registro += (int)sizeof(uint16_t);
+
+            EEPROM.writeULong(registro, masterkey);
+
+            EEPROM.commit();
+#endif
+            IEsp32::serial_println_shall(" == Stack updated == ");
+        }
+
+        void read()
+        {
+#ifdef DEPLOY
+            int registro;
+            registro = 0;
+
+            ventilacionEnable = EEPROM.readBool(registro);
+            registro += (int)sizeof(bool);
+
+            resistivoEnable = EEPROM.readBool(registro);
+            registro += (int)sizeof(bool);
+
+            controlOnOff = EEPROM.readBool(registro);
+            registro += (int)sizeof(bool);
+
+            masterkeydone = EEPROM.readBool(registro);
+            registro += (int)sizeof(bool);
+
+            lastkey = EEPROM.readUShort(registro);
+            registro += (int)sizeof(uint16_t);
+
+            masterkey = EEPROM.readULong(registro);
+
+            IEsp32::serial_println_shall(" == Stack read ==");
+            print();
+            IEsp32::serial_println_shall(" ================");
+#endif
+        }
+
+        void print()
+        {
+            IEsp32::serial_print_shall("ventilacionEnable: "); IEsp32::serial_println_shall(ventilacionEnable);
+            IEsp32::serial_print_shall("resistivoEnable: "); IEsp32::serial_println_shall(resistivoEnable);
+            IEsp32::serial_print_shall("controlOnOff: "); IEsp32::serial_println_shall(controlOnOff);
+            IEsp32::serial_print_shall("masterkeydone: "); IEsp32::serial_println_shall(masterkeydone);
+            IEsp32::serial_print_shall("lastkey: "); IEsp32::serial_println_shall(lastkey);
+            IEsp32::serial_print_shall("masterkey: "); IEsp32::serial_println_shall(masterkey);
+        }
 };
+        
 
 
 

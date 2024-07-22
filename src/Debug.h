@@ -11,7 +11,6 @@ class Debug
         Debug(){}
 
         static Comunicacion com;
-        Operativos op_aux;
 
         void interprete(Nextion& nx, Operativos& op);
 

@@ -7,30 +7,30 @@
 //* Eventos seriales de Nextion
 void serial2Event()
 {
-    // uint8_t i=0;
-    // char caracter;
-    // while (IEsp32::serial2_available()){
-    //     caracter = IEsp32::serial2_read();
+    uint8_t i=0;
+    char caracter;
+    while (IEsp32::serial2_available()){
+        caracter = IEsp32::serial2_read();
         
-    //     if (!isAlphaNumeric(caracter) && caracter != ','){continue;}
+        if (!isAlphaNumeric(caracter) && caracter != ','){continue;}
 
-    //     if(i < (uint8_t)(sizeof(Nextion::com.comando)/sizeof(Nextion::com.comando[0]))-1)
-    //     {
-    //         Nextion::com.comando[i] = caracter;
-    //         i++;
-    //     }
-    //     if(caracter == '\0')break;
-    //     IEsp32::retardo(2);
-    // }
+        if(i < (uint8_t)(sizeof(Nextion::com.comando)/sizeof(Nextion::com.comando[0]))-1)
+        {
+            Nextion::com.comando[i] = caracter;
+            i++;
+        }
+        if(caracter == '\0')break;
+        IEsp32::retardo(2);
+    }
     
-    // //Importante para la logica
-    // Nextion::com.comando[i] = '\n';
+    //Importante para la logica
+    Nextion::com.comando[i] = '\n';
 
-    // if (!Nextion::com.compararEqual(Nextion::com.comando, ""))
-    // {
-    //     IEsp32::serial_print_shall("FROM NX -> "); 
-    //     IEsp32::serial_println_shall(Nextion::com.comando);
-    // }
+    if (!Nextion::com.compararEqual(Nextion::com.comando, ""))
+    {
+        IEsp32::serial_print_shall("FROM NX -> "); 
+        IEsp32::serial_println_shall(Nextion::com.comando);
+    }
 }
 
 //* Eventos seriales de debug
@@ -119,8 +119,6 @@ void Comunicacion::sendFinal()
     IEsp32::serial2_write(0xff);
     IEsp32::serial2_write(0xff);
     IEsp32::serial2_write(0xff);
-#ifdef SHOWNEXTION
-    IEsp32::serial_println();
-#endif
+
     IEsp32::retardo(3);
 }

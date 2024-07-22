@@ -12,8 +12,8 @@
 //***********************************************************
 
 //#define UNIT_TEST
-#define EMULATION
-//#define DEPLOY
+//#define EMULATION
+#define DEPLOY
 
 //***********************************************************
 
@@ -28,9 +28,12 @@
 
 //************************************************************
 
+#define OVERRIDE_STACK
 
 //#define SHOW_IO
-#define DEBUG_INFO
+//#define DEBUG_INFO
+//#define SHOWNEXTION
+#define NO_CONFIRM_AVAILABLE
 
 
 //************************************************************
@@ -54,4 +57,3 @@
 
 
 
-#define OVERRIDE_STACK

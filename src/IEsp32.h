@@ -96,6 +96,15 @@ class IEsp32
 #endif
         }
 
+        static inline void serial_println_shall()
+        {
+#ifdef DEPLOY
+            Serial.println();
+#else
+            std::cout << std::endl;
+#endif
+        }
+
         template <class TipodatoSerial>     
         static inline void serial_println(const TipodatoSerial text)
         {
@@ -104,6 +113,17 @@ class IEsp32
             Serial.println(text);
 #else
             std::cout << text << std::endl;
+#endif
+#endif
+        }
+
+        static inline void serial_println()
+        {
+#ifdef DEBUG_INFO
+#ifdef DEPLOY
+            Serial.println();
+#else
+            std::cout << std::endl;
 #endif
 #endif
         }
@@ -148,6 +168,9 @@ class IEsp32
         {
 #ifdef DEPLOY
             Serial2.print(text);
+#ifdef SHOWNEXTION
+            Serial.print(text);
+#endif
 #else
             serial_nxcom.writeString(text);
 #ifdef SHOWNEXTION

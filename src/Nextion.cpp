@@ -2,9 +2,9 @@
 
 Comunicacion Nextion::com;
 
-void Nextion::send_stack(Operativos& op)
+void Nextion::send_stack(Operativos& op, Stack& st)
 {
-    int8_t index_last_key = first_digit(op.stack.lastkey) - 1;
+    int8_t index_last_key = first_digit(st.lastkey) - 1;
     uint8_t sizearray = sizeof(op.analogicos.clave)/sizeof(uint16_t) - 1;
     if (index_last_key > sizearray - 1) index_last_key = -1;
     uint16_t nextkey = op.analogicos.clave[index_last_key + 1];
@@ -12,7 +12,7 @@ void Nextion::send_stack(Operativos& op)
     com.send(2, "n0", first_digit(nextkey));
 }
 
-void Nextion::send(Operativos& op)
+void Nextion::send(Operativos& op, Stack& st)
 {
     com.send(0, "n0", (uint16_t)op.analogicos.tempera);
 
@@ -20,7 +20,7 @@ void Nextion::send(Operativos& op)
         com.send(0, "n1", (uint16_t)op.analogicos.setpoint);
 }
 
-void Nextion::receive(Operativos& op)
+void Nextion::receive(Operativos& op, Stack& st)
 {
     if (com.compararEqual(com.comando, "BURNER"))
     {
@@ -155,15 +155,15 @@ void Nextion::receive(Operativos& op)
         if(op.analogicos.clave[index] == clave) 
         {
             com.send("page 0");
-            op.stack.lastkey = clave;
-            op.stack.save();
+            st.lastkey = clave;
+            st.save();
         }
 
-        if(op.stack.masterkey == clave)
+        if(st.masterkey == clave)
         {
             com.send("page 0");
-            op.stack.masterkeydone = true;
-            op.stack.save();
+            st.masterkeydone = true;
+            st.save();
         }
         
     }

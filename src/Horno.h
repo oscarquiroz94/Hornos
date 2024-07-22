@@ -26,6 +26,7 @@ class Horno
         }
 
         Operativos& get_instance_op()         {return op;}
+        Stack&      get_instance_stack()      {return st;}
         
         Nextion&    get_instance_nextion()    {return nx;}
         Entradas&   get_instance_termostato() {return termostato;}
@@ -38,7 +39,7 @@ class Horno
         //ToDo: mover a factories
         Control*  get_instace_controlador()
         {
-            if (op.stack.controlOnOff)
+            if (st.controlOnOff)
             {
                 static ControlOnOff controlador;
                 return &controlador;
@@ -50,7 +51,7 @@ class Horno
 
         Motor* get_instance_motor()
         {
-            if (op.stack.ventilacionEnable)
+            if (st.ventilacionEnable)
             {
                 static Motor ventilador(IDENT::VENTILADOR);
                 return &ventilador;
@@ -62,7 +63,7 @@ class Horno
 
         Quemador* get_instance_quemador()   
         {
-            if (op.stack.resistivoEnable)
+            if (st.resistivoEnable)
             {
                 static QuemadorResistivo quemador(IDENT::QUEMRESIST);
                 return &quemador;
@@ -90,7 +91,7 @@ class Horno
     
     private:
         Operativos op;
-        
+        Stack      st;
         ControlPid pid;
         Nextion    nx;
         Entradas   termostato;  

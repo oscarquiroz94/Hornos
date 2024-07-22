@@ -15,9 +15,9 @@ class Nextion
 
         static Comunicacion com;
         
-        void receive(Operativos& op);
-        void send(Operativos& op);
-        void send_stack(Operativos& op);
+        void receive(Operativos& op, Stack& st);
+        void send(Operativos& op, Stack& st);
+        void send_stack(Operativos& op, Stack& st);
         void reset();
 
         void send_motor_state(bool state)

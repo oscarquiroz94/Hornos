@@ -12,6 +12,8 @@ Supervision supervisor;
 #ifndef DEPLOY
     #define SERIAL_PORT_NX "\\\\.\\COM15"   
     SeriaLib serial_nxcom(SERIAL_PORT_NX, 115200);
+#else
+    #include <EEPROM.h>
 #endif
 
 extern void serialEvent();
@@ -23,22 +25,28 @@ void setup()
 void setupmain()
 #endif
 {
-#ifdef OVERRIDE_STACK
-    horno.get_instance_op().stack.save();
-#endif
-    horno.get_instance_op().stack.read();
-
     IEsp32::serial_begin(115200);
     IEsp32::serial2_begin(115200, 0x800001c, 16, 17);
+    IEsp32::serial_println_shall();
+
+    EEPROM.begin(sizeof(Stack));
+
+#ifdef OVERRIDE_STACK
+    horno.get_instance_stack().save();
+#endif
+    horno.get_instance_stack().read();
 
     horno.set_modes();
     horno.get_instance_nextion().reset();
     IEsp32::retardo(500);
-    if (horno.get_instance_op().stack.masterkeydone)
+
+    if (horno.get_instance_stack().masterkeydone)
     {
         horno.get_instance_nextion().com.send("page 0");
     }
-    horno.get_instance_nextion().send_stack(horno.get_instance_op());
+    horno.get_instance_nextion().send_stack
+        (horno.get_instance_op(), horno.get_instance_stack());
+
 }
 
 #if defined(DEPLOY) && !defined(INTEGRATED_TEST)
@@ -46,14 +54,12 @@ void loop()
 {
     if (IEsp32::serial2_available()) serial2Event();
     if (IEsp32::serial_available()) serialEvent();
+    
     manager.run(horno);
     supervisor.verify_all(horno);
-
-    //------
-
+    
     dbg.interprete(horno.get_instance_nextion(), horno.get_instance_op());
 
-    //------
 
     IEsp32::retardo(200);
     IEsp32::serial_println("======================");
