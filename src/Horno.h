@@ -45,7 +45,8 @@ class Horno
                 return &controlador;
             }else
             {
-                return nullptr;
+                static ControlPid controlador;
+                return &controlador;
             }
         }
 

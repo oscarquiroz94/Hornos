@@ -93,8 +93,8 @@ class Stack
 {
     public:
         bool ventilacionEnable = true;
-        bool resistivoEnable = false;
-        bool controlOnOff = true;
+        bool resistivoEnable = true;
+        bool controlOnOff = false;
         bool masterkeydone = false;
         uint16_t lastkey = 920;
         uint32_t masterkey = 5980510;
@@ -123,9 +123,9 @@ class Stack
 
             EEPROM.writeULong(registro, masterkey);
 
-            EEPROM.commit();
+            if (EEPROM.commit())
 #endif
-            IEsp32::serial_println_shall(" == Stack updated == ");
+            {IEsp32::serial_println_shall(" == Stack updated == ");}
         }
 
         void read()

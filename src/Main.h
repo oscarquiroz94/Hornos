@@ -26,14 +26,16 @@
 #endif
 
 
-//************************************************************
+//! *********************************************************
 
 #define OVERRIDE_STACK
 
+//! *********************************************************
+
 //#define SHOW_IO
-//#define DEBUG_INFO
+#define DEBUG_INFO
 //#define SHOWNEXTION
-#define NO_CONFIRM_AVAILABLE
+#define CONFIRM_AVAILABLE //Las confirmaciones estan disponibles
 
 
 //************************************************************

@@ -17,10 +17,15 @@ void Manager::run(Horno& horno)
     accion_valvula(horno);
     accion_baliza(horno);
 
-    //! Desactivar onramp automaticamente implica que la temperatura
-    //! seguira el setpoint de pantalla principal
+    //ToDo:: revisar esta logica, cuando no esta en onramp o ontimer
+    if (!horno.get_instance_op().eventos.onramp
+        && !horno.get_instance_op().eventos.ontimer)
+    {
+        accion_control(horno);
+    }
     if (horno.get_instance_op().eventos.onramp)  accion_rampa(horno);
     if (horno.get_instance_op().eventos.ontimer) accion_control(horno);
+
     
     accion_potencia_quemador(horno);
     
@@ -60,17 +65,21 @@ void Manager::accion_lectura_entradas(Horno& horno)
     if (quemador == nullptr) return;
     if (termostato == nullptr) return;
 
-#ifndef NO_CONFIRM_AVAILABLE
-    op->confirmaciones.isQuemador = quemador->is_running();
+#ifdef CONFIRM_AVAILABLE
+    //! Deshabilitado temporal
+    //op->confirmaciones.isQuemador = quemador->is_running();
     op->confirmaciones.isAlarma = quemador->is_alarma();
     op->confirmaciones.isTermostato = termostato->read();
 #endif
 
     // Si se desactiva ventilador aun se quieren leer las otras entradas
     if (ventilador == nullptr) return;
-#ifndef NO_CONFIRM_AVAILABLE
+#ifdef CONFIRM_AVAILABLE
     op->confirmaciones.isVentilador = ventilador->isRunning();
 #endif
+
+    //! Temporal
+    op->confirmaciones.isQuemador = op->confirmaciones.isVentilador;
     
 }
 
@@ -135,11 +144,10 @@ void Manager::accion_control(Horno& horno)
 
     pid->set_temperatura_deseada(op->analogicos.setpoint);
 
-    //! Deshabilitado para testing Etapa 3 -> COBRAR !!!
-    //op->analogicos.potenciaQuem = pid->regular(*op);  
+    op->analogicos.potenciaQuem = pid->regular(*op);  
 
     // Control ON OFF se realiza con la valvula de alto fuego
-    c_onoff->regular(*op);
+    //c_onoff->regular(*op);
 }
 
 void Manager::accion_rampa(Horno& horno)
@@ -165,12 +173,11 @@ void Manager::accion_rampa(Horno& horno)
             pid->set_temperatura_deseada(op->analogicos.setpoint);
         }
     }
-
-    //! Deshabilitado para testing Etapa 3 -> COBRAR !!!
-    //op->analogicos.potenciaQuem = pid->regular(*op); 
+    
+    op->analogicos.potenciaQuem = pid->regular(*op); 
 
     // Control ON OFF se realiza con la valvula de alto fuego
-    c_onoff->regular(*op);
+    //c_onoff->regular(*op);
 }
 
 void Manager::accion_potencia_quemador(Horno& horno)
