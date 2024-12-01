@@ -15,8 +15,8 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN 
 This is a licence-free software, it can be used by anyone who try to build a better world.
 */
 
-#include <windows.h>
 #include <winsock2.h>
+#include <windows.h>
 #include <ws2tcpip.h>
 
 #ifndef SERIALIB_H

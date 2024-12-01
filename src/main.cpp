@@ -21,15 +21,17 @@ extern void serial2Event();
 
 #if defined(DEPLOY) && !defined(INTEGRATED_TEST)
 void setup()
+{
+    EEPROM.begin(sizeof(Stack));
 #else
 void setupmain()
-#endif
 {
+#endif
+
     IEsp32::serial_begin(115200);
     IEsp32::serial2_begin(115200, 0x800001c, 16, 17);
     IEsp32::serial_println_shall();
 
-    EEPROM.begin(sizeof(Stack));
 
 #ifdef OVERRIDE_STACK
     horno.get_instance_stack().save();
