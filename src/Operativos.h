@@ -93,9 +93,9 @@ class Stack
 {
     public:
         bool ventilacionEnable = true;
-        bool resistivoEnable = true;
-        bool controlOnOff = false;
+        bool resistivoEnable = false;
         bool masterkeydone = false;
+        uint8_t controlType = 0; // 0 ControlOnOffpwm, 1 ControlOnOff, 2 Controlpid
         uint16_t lastkey = 920;
         uint32_t masterkey = 5980510;
 
@@ -161,7 +161,7 @@ class Stack
         {
             IEsp32::serial_print_shall("ventilacionEnable: "); IEsp32::serial_println_shall(ventilacionEnable);
             IEsp32::serial_print_shall("resistivoEnable: "); IEsp32::serial_println_shall(resistivoEnable);
-            IEsp32::serial_print_shall("controlOnOff: "); IEsp32::serial_println_shall(controlOnOff);
+            IEsp32::serial_print_shall("controlType: "); IEsp32::serial_println_shall(controlType);
             IEsp32::serial_print_shall("masterkeydone: "); IEsp32::serial_println_shall(masterkeydone);
             IEsp32::serial_print_shall("lastkey: "); IEsp32::serial_println_shall(lastkey);
             IEsp32::serial_print_shall("masterkey: "); IEsp32::serial_println_shall(masterkey);

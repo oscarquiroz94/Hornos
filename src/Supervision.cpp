@@ -107,6 +107,8 @@ void Supervision::verify_timer_started(Horno& horno)
     if (op == nullptr) return;
     if (nx == nullptr) return;
 
+    IEsp32::serial_println("supervision timer");
+
     //---------------
 
     if (!op->confirmaciones.isQuemador) op->eventos.ontimer = false;
@@ -114,9 +116,9 @@ void Supervision::verify_timer_started(Horno& horno)
     if (op->eventos.ontimer)
     {
 #ifdef DEPLOY
-        String cadena = "page0.b5.txt=\"Started: \"" + String(op->analogicos.timernx); + "\"min\"";
+        String cadena = "page0.b5.txt=\"Running for: \"" + String(op->analogicos.timernx); + "\"min\"";
 #else
-        std::string cadena = "page0.b5.txt=\"Started: " + std::to_string(op->analogicos.timernx) + " min\"";
+        std::string cadena = "page0.b5.txt=\"Running for: " + std::to_string(op->analogicos.timernx) + " min\"";
         nx->com.send(&cadena[0]);
 #endif
         nx->send_timer_state(true);
@@ -124,7 +126,6 @@ void Supervision::verify_timer_started(Horno& horno)
     {
         nx->send_timer_state(false);
         nx->com.send("page0.b5.txt=\"\"");
-        op->eventos.onvalvula = false;
     }
 }
 
@@ -136,12 +137,14 @@ void Supervision::verify_ramp_started(Horno& horno)
     if (op == nullptr) return;
     if (nx == nullptr) return;
 
+    IEsp32::serial_println("supervision ramp");
+
     if (op->confirmaciones.isQuemador && op->eventos.onramp)
     {
 #ifdef DEPLOY
-        String cadena = "page1.t2.txt=\"Started: \"" + String(op->analogicos.timernx); + "\"min\"";
+        String cadena = "page1.t2.txt=\"Running for: \"" + String(op->analogicos.timernx); + "\"min\"";
 #else
-        std::string cadena = "page1.t2.txt=\"Started: " + std::to_string(op->analogicos.timernx) + " min\"";
+        std::string cadena = "page1.t2.txt=\"Running for: " + std::to_string(op->analogicos.timernx) + " min\"";
         nx->com.send(&cadena[0]);
 #endif
     }else if (op->confirmaciones.isQuemador && !op->eventos.onramp)

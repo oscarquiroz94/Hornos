@@ -18,26 +18,27 @@ class InterfazInputs
 #ifdef DEPLOY
             return IEsp32::digital_Read(name, pin);
 #else
-            // switch (name)
-            // {
-            // case IDENT::INQUEMRUN :
-            //     return dbg.op_aux.confirmaciones.isQuemador;
+            return false;
+        //     switch (name)
+        //     {
+        //     case IDENT::INQUEMRUN :
+        //         return dbg.op_aux.confirmaciones.isQuemador;
 
-            // case IDENT::INVENTRUN :
-            //     return dbg.op_aux.confirmaciones.isVentilador;
+        //     case IDENT::INVENTRUN :
+        //         return dbg.op_aux.confirmaciones.isVentilador;
 
-            // case IDENT::TERMOSTATO :
-            //     return dbg.op_aux.confirmaciones.isTermostato;
+        //     case IDENT::TERMOSTATO :
+        //         return dbg.op_aux.confirmaciones.isTermostato;
 
-            // case IDENT::INQUEMOK :
-            //     return dbg.op_aux.confirmaciones.isAlarma;
+        //     case IDENT::INQUEMOK :
+        //         return dbg.op_aux.confirmaciones.isAlarma;
             
-            // default:
-            //     IEsp32::serial_print("*** Sensor interfaz input NO definido: ");
-            //     IEsp32::serial_print((uint16_t)name);
-            //     IEsp32::serial_println(" ***");
-            //     return -1.0;
-            // }
+        //     default:
+        //         IEsp32::serial_print("*** Sensor interfaz input NO definido: ");
+        //         IEsp32::serial_print((uint16_t)name);
+        //         IEsp32::serial_println(" ***");
+        //         return -1.0;
+        //     }
 #endif
         }
 

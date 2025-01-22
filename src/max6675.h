@@ -15,49 +15,50 @@
     @brief  Class for communicating with thermocouple sensor
 */
 /**************************************************************************/
-class MAX6675 {
+class MAX6675
+{
 public:
-  MAX6675(uint8_t SCLK, uint8_t CS, uint8_t MISO);
+    MAX6675(uint8_t SCLK, uint8_t CS, uint8_t MISO);
 
-  float readCelsius(void);
-  float readFahrenheit(void);
+    float readCelsius(void);
+    float readFahrenheit(void);
 
-  /*!    @brief  For compatibility with older versions
-         @returns Temperature in F or NAN on failure! */
-  float readFarenheit(void) { return readFahrenheit(); }
+    /*!    @brief  For compatibility with older versions
+           @returns Temperature in F or NAN on failure! */
+    float readFarenheit(void) { return readFahrenheit(); }
 
 private:
-  uint8_t sclk, miso, cs;
-  byte spiread(void);
+    uint8_t sclk, miso, cs;
+    byte spiread(void);
 };
 #else
 class MAX6675
 {
-    public:
-        MAX6675(uint8_t SCLK, uint8_t CS, uint8_t MISO)
-        {
-            IEsp32::serial_print("Sensor max6675: SCLK ");
-            IEsp32::serial_print((uint16_t)SCLK);
-            IEsp32::serial_print(", CS ");
-            IEsp32::serial_print((uint16_t)CS);
-            IEsp32::serial_print(", MISO ");
-            IEsp32::serial_println((uint16_t)MISO);
-            cs = CS;
-        }
+public:
+    MAX6675(uint8_t SCLK, uint8_t CS, uint8_t MISO)
+    {
+        IEsp32::serial_print("Sensor max6675: SCLK ");
+        IEsp32::serial_print((uint16_t)SCLK);
+        IEsp32::serial_print(", CS ");
+        IEsp32::serial_print((uint16_t)CS);
+        IEsp32::serial_print(", MISO ");
+        IEsp32::serial_println((uint16_t)MISO);
+        cs = CS;
+    }
 
-        float readCelsius(void)
-        {
-            if (cs == IDENT::MAXCS1) return 15.2;
-            if (cs == IDENT::MAXCS2) return 28.4;
-            return 0.0;
-        }
-        ~MAX6675() {}
+    float readCelsius(void)
+    {
+        if (cs == IDENT::MAXCS1)
+            return 15.2;
+        if (cs == IDENT::MAXCS2)
+            return 28.4;
+        return 0.0;
+    }
+    ~MAX6675() {}
 
-    private:
-        uint8_t cs;
-
+private:
+    uint8_t cs;
 };
-
 
 #endif
 

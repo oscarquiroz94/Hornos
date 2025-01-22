@@ -36,18 +36,25 @@ class Horno
         SensorAnalogico& get_instance_sensTempera()    {return sensTempera;} 
         SensorAnalogico& get_instance_sensTemperaAux() {return sensTemperaAux;} 
 
-        //ToDo: mover a factories
         Control*  get_instace_controlador()
         {
-            if (st.controlOnOff)
+            if (st.controlType == 0)
+            {
+                static ControlOnOffpwm controlador;
+                return &controlador;
+            }
+            else if (st.controlType == 1)
             {
                 static ControlOnOff controlador;
                 return &controlador;
-            }else
+            }
+            else if (st.controlType == 2)
             {
                 static ControlPid controlador;
                 return &controlador;
             }
+                
+            
         }
 
         Motor* get_instance_motor()

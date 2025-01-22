@@ -32,6 +32,7 @@ void Nextion::receive(Operativos& op, Stack& st)
         op.eventos.onventilador = op.eventos.onventilador == true ? false : true;
     }
 
+    //! Esta desactivado desde Nextion
     if (com.compararEqual(com.comando, "VALVE"))
     {
         op.eventos.onvalvula = op.eventos.onvalvula == true ? false : true;

@@ -11,7 +11,7 @@ class Control
         virtual void set_temperatura_deseada(double valor) { setpoint = valor; };
 
     protected:
-        double setpoint;
+        double setpoint = 0.0;
 };
 
 class ControlOnOff : public Control
@@ -20,15 +20,29 @@ class ControlOnOff : public Control
 
         void regular(Operativos& op)
         {
-            if (op.analogicos.tempera > op.analogicos.setpoint + umbral) 
+            if (op.analogicos.tempera > setpoint + umbral) 
                 op.eventos.onvalvula = false;
 
-            else if (op.analogicos.tempera <= op.analogicos.setpoint - umbral) 
+            else if (op.analogicos.tempera <= setpoint - umbral) 
                 op.eventos.onvalvula = true;
         }
 
-    private:
+    protected:
         double umbral = 5.0;
+};
+
+class ControlOnOffpwm : public ControlOnOff
+{
+    public:
+
+        double regular(Operativos& op)
+        {
+            if (op.analogicos.tempera > setpoint + umbral) 
+                return 0.0;
+
+            else if (op.analogicos.tempera <= setpoint - umbral) 
+                return 100.0;
+        }
 };
 
 class ControlPid : public Control
