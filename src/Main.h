@@ -12,8 +12,8 @@
 //***********************************************************
 
 //#define UNIT_TEST
-#define EMULATION
-//#define DEPLOY
+//#define EMULATION
+#define DEPLOY
 
 //***********************************************************
 

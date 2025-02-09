@@ -18,7 +18,7 @@
 class MAX6675
 {
 public:
-    MAX6675(uint8_t SCLK, uint8_t CS, uint8_t MISO);
+    MAX6675(int8_t SCLK, int8_t CS, int8_t MISO);
 
     float readCelsius(void);
     float readFahrenheit(void);
@@ -28,8 +28,8 @@ public:
     float readFarenheit(void) { return readFahrenheit(); }
 
 private:
-    uint8_t sclk, miso, cs;
-    byte spiread(void);
+    int8_t sclk, miso, cs;
+    uint8_t spiread(void);
 };
 #else
 class MAX6675

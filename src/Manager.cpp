@@ -75,12 +75,6 @@ void Manager::accion_lectura_entradas(Horno& horno)
     if (quemador == nullptr) return;
     if (termostato == nullptr) return;
 
-    //! *** TEST ***
-    op->confirmaciones.isVentilador = op->eventos.onventilador;
-    op->confirmaciones.isQuemador   = op->eventos.onquemador;
-    return;
-    //! ************
-
 
 #ifdef CONFIRM_AVAILABLE
     //Quemador confirma encendido
@@ -144,6 +138,7 @@ void Manager::accion_quemador(Horno& horno)
 void Manager::accion_control(Horno& horno)
 {
     Operativos* op = &horno.get_instance_op();
+
     ControlOnOffpwm* accion = (ControlOnOffpwm*)horno.get_instace_controlador();
     //ControlPid* pid = (ControlPid*)horno.get_instace_controlador();
     //ControlOnOff* c_onoff = (ControlOnOff*)horno.get_instace_controlador();

@@ -108,10 +108,10 @@ class Horno
         SensorAnalogico  sensTempera;
         SensorAnalogico  sensTemperaAux;
 
-        static constexpr uint8_t PIN_SCLK = 18;
-        static constexpr uint8_t PIN_CS1  =  5;
-        static constexpr uint8_t PIN_CS2  =  4;
-        static constexpr uint8_t PIN_MISO = 19;
+        static constexpr int8_t PIN_SCLK = 18;
+        static constexpr int8_t PIN_CS1  =  5;
+        static constexpr int8_t PIN_CS2  =  4;
+        static constexpr int8_t PIN_MISO = 19;
         static constexpr uint8_t PIN_TERMOSTATO    = 32;
         static constexpr uint8_t PIN_VALVULA_ONOFF = 12;
 };

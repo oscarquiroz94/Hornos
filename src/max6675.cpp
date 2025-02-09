@@ -13,7 +13,7 @@
     @param   MISO The Arduino pin connected to Data Out
 */
 /**************************************************************************/
-MAX6675::MAX6675(uint8_t SCLK, uint8_t CS, uint8_t MISO) {
+MAX6675::MAX6675(int8_t SCLK, int8_t CS, int8_t MISO) {
   sclk = SCLK;
   cs = CS;
   miso = MISO;

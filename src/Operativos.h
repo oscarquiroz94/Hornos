@@ -112,7 +112,7 @@ class Stack
             EEPROM.writeBool(registro, resistivoEnable);
             registro += (int)sizeof(bool);
 
-            EEPROM.writeBool(registro, controlOnOff);
+            EEPROM.writeBool(registro, controlType);
             registro += (int)sizeof(bool);
 
             EEPROM.writeBool(registro, masterkeydone);
@@ -140,7 +140,7 @@ class Stack
             resistivoEnable = EEPROM.readBool(registro);
             registro += (int)sizeof(bool);
 
-            controlOnOff = EEPROM.readBool(registro);
+            controlType = EEPROM.readBool(registro);
             registro += (int)sizeof(bool);
 
             masterkeydone = EEPROM.readBool(registro);
