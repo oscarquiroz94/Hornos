@@ -32,6 +32,7 @@ class Operativos
             double potenciaQuem = 0.0;
             uint16_t setpoint = 100;
             uint16_t timernx = 0;
+            uint16_t lasttimernx = 0;
             uint32_t tiempotimer = 5;
             uint16_t arrayTemperaturas[8] = {100, 120, 140, 160, 100, 120, 140, 160};
             uint16_t arrayTiempos[8] = {0, 10, 20, 30, 0, 10, 20, 30};
@@ -46,10 +47,14 @@ class Operativos
             bool isAlarma = false;
             bool isTermostato = false;
             bool isAdicional = false;
+            bool isProcessInit = false;
         } confirmaciones;
         
         void print()
         {
+#ifndef DEPLOY
+            system("cls");
+#endif
             IEsp32::serial_print("Eventos onventilador: "); IEsp32::serial_println(eventos.onventilador);
             IEsp32::serial_print("Eventos onquemador: "); IEsp32::serial_println(eventos.onquemador);
             IEsp32::serial_print("Eventos onvalvula: "); IEsp32::serial_println(eventos.onvalvula);
@@ -60,25 +65,26 @@ class Operativos
             IEsp32::serial_print("Analogi temperaAux: "); IEsp32::serial_println(analogicos.temperaAux);
             IEsp32::serial_print("Analogi potenciaQuem: "); IEsp32::serial_println(analogicos.potenciaQuem);
             IEsp32::serial_print("Analogi timernx: "); IEsp32::serial_println(analogicos.timernx);
+            IEsp32::serial_print("Analogi lasttimernx: "); IEsp32::serial_println(analogicos.lasttimernx);
             IEsp32::serial_print("Analogi timetimer: "); IEsp32::serial_println(analogicos.tiempotimer);
             IEsp32::serial_print("Confirm isQuemador: "); IEsp32::serial_println(confirmaciones.isQuemador);
             IEsp32::serial_print("Confirm isVentilador: "); IEsp32::serial_println(confirmaciones.isVentilador);
             IEsp32::serial_print("Confirm isAlarma: "); IEsp32::serial_println(confirmaciones.isAlarma);
             IEsp32::serial_print("Confirm isTermostato: "); IEsp32::serial_println(confirmaciones.isTermostato);
             IEsp32::serial_print("Confirm isAdicional: "); IEsp32::serial_println(confirmaciones.isAdicional);
-            IEsp32::serial_print("Analogi arrayTemperatura: ");
-            for(uint8_t i = 0; i < 8; i++)
-            {
-                IEsp32::serial_print(analogicos.arrayTemperaturas[i]);
-                IEsp32::serial_print(", ");
-            }
-            IEsp32::serial_println("");
-            IEsp32::serial_print("Analogi arrayTemperatura: ");
-            for(uint8_t i = 0; i < 8; i++)
-            {
-                IEsp32::serial_print(analogicos.arrayTiempos[i]);
-                IEsp32::serial_print(", ");
-            }
+            //IEsp32::serial_print("Analogi arrayTemperatura: ");
+            // for(uint8_t i = 0; i < 8; i++)
+            // {
+            //     IEsp32::serial_print(analogicos.arrayTemperaturas[i]);
+            //     IEsp32::serial_print(", ");
+            // }
+            // IEsp32::serial_println("");
+            // IEsp32::serial_print("Analogi arrayTemperatura: ");
+            // for(uint8_t i = 0; i < 8; i++)
+            // {
+            //     IEsp32::serial_print(analogicos.arrayTiempos[i]);
+            //     IEsp32::serial_print(", ");
+            // }
             IEsp32::serial_println("");
         }
 

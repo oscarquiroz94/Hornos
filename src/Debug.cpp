@@ -2,12 +2,8 @@
 
 Comunicacion Debug::com;
 
-void Debug::interprete(Nextion& nx, Operativos& op)
+void Debug::interprete(Operativos& op)
 {
-    //Copiar comandos de consola como ordenes a Nextion
-    strcpy(nx.com.comando, com.comando);
-    
-    //! Manager sobreescribira estos datos en op
     if(com.comparar(com.comando, "POW,"))
     {
         char *listaValores = strtok(com.comando,",");

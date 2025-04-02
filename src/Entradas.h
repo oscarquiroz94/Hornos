@@ -6,6 +6,8 @@
 #include "InterfazInputs.h"
 #include "Temporizador.h"
 
+extern InterfazInputs interinputs;
+
 class Entradas
 {
     public:
@@ -20,7 +22,6 @@ class Entradas
         bool read(){ return interinputs.digiread(type, pin);}
         void set_mode(uint8_t pin, uint8_t mode) { IEsp32::pinmode(pin, mode); }
 
-
         ~Entradas()
         {
             IEsp32::serial_println("Entradas: instance deleted");
@@ -28,7 +29,7 @@ class Entradas
     private:
         uint8_t type;
         uint8_t pin;
-        InterfazInputs interinputs;
+        
 };
 
 class SensorAnalogico

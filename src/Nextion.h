@@ -61,16 +61,16 @@ class Nextion
 
         void send_timer_state(bool state)
         {
-            if (!state)
-            {
-                com.send("page0.b6.bco=44373");
-                com.send("page0.b6.bco2=27501");
+            // if (!state)
+            // {
+            //     com.send("page0.b6.bco=44373");
+            //     com.send("page0.b6.bco2=27501");
                 
-            }else
-            {
-                com.send("page0.b6.bco=1760");
-                com.send("page0.b6.bco2=1315");
-            }
+            // }else
+            // {
+            //     com.send("page0.b6.bco=1760");
+            //     com.send("page0.b6.bco2=1315");
+            // }
         }
 
         void send_alarma_state(bool state)

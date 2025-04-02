@@ -12,7 +12,7 @@ class Debug
 
         static Comunicacion com;
 
-        void interprete(Nextion& nx, Operativos& op);
+        void interprete(Operativos& op);
 
         ~Debug(){}
 

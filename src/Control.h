@@ -38,11 +38,24 @@ class ControlOnOffpwm : public ControlOnOff
         double regular(Operativos& op)
         {
             if (op.analogicos.tempera > setpoint + umbral) 
-                return 0.0;
+                currentvalue = 0.0;
 
             else if (op.analogicos.tempera <= setpoint - umbral) 
-                return 100.0;
+                currentvalue = 100.0;
+            
+            return currentvalue;
         }
+
+        bool isInsideUmbral(Operativos& op)
+        {
+            if (op.analogicos.tempera > setpoint - umbral && op.analogicos.tempera < setpoint + umbral) 
+                return true;
+            else
+                return false;
+        }
+    
+    private:
+        double currentvalue = 0.0;
 };
 
 class ControlPid : public Control

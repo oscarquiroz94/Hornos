@@ -4,9 +4,9 @@
 #include "Main.h"
 #include "Identity.h"
 #include "IEsp32.h"
-#include "Debug.h"
+#include "Operativos.h"
 
-extern Debug dbg;
+extern Operativos op_aux;
 
 class InterfazInputs
 {
@@ -18,31 +18,31 @@ class InterfazInputs
 #ifdef DEPLOY
             return IEsp32::digital_Read(name, pin);
 #else
-            return false;
-        //     switch (name)
-        //     {
-        //     case IDENT::INQUEMRUN :
-        //         return dbg.op_aux.confirmaciones.isQuemador;
+            switch (name)
+            {
+                case IDENT::INQUEMRUN :
+                    return op_aux.confirmaciones.isQuemador;
 
-        //     case IDENT::INVENTRUN :
-        //         return dbg.op_aux.confirmaciones.isVentilador;
+                case IDENT::INVENTRUN :
+                    return op_aux.confirmaciones.isVentilador;
 
-        //     case IDENT::TERMOSTATO :
-        //         return dbg.op_aux.confirmaciones.isTermostato;
+                case IDENT::TERMOSTATO :
+                    return op_aux.confirmaciones.isTermostato;
 
-        //     case IDENT::INQUEMOK :
-        //         return dbg.op_aux.confirmaciones.isAlarma;
-            
-        //     default:
-        //         IEsp32::serial_print("*** Sensor interfaz input NO definido: ");
-        //         IEsp32::serial_print((uint16_t)name);
-        //         IEsp32::serial_println(" ***");
-        //         return -1.0;
-        //     }
+                case IDENT::INQUEMOK :
+                    return op_aux.confirmaciones.isAlarma;
+                
+                default:
+                    IEsp32::serial_print("*** Sensor interfaz input NO definido: ");
+                    IEsp32::serial_print((uint16_t)name);
+                    IEsp32::serial_println(" ***");
+                    return false;
+            }
 #endif
         }
-
         ~InterfazInputs(){}
+
+    private:
 };
 
 

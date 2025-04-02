@@ -3,11 +3,12 @@
 
 #include "IEsp32.h"
 #include "Horno.h"
+#include "EmuladorPlanta.h"
 
 class Manager
 {
     public:
-        Manager()
+        Manager() : emuladortempera(10.0, 0.2, 480.0)
         {
             IEsp32::serial_println("Manager: instance created");
         }
@@ -20,6 +21,8 @@ class Manager
         }
 
     private:
+        EmuladorPlanta emuladortempera;
+
         void accion_lectura_temperatura(Horno& horno);
         void accion_lectura_entradas(Horno& horno);
         void accion_ventilador(Horno& horno);

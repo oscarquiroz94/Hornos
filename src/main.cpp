@@ -8,6 +8,8 @@ Horno       horno;
 Manager     manager;
 Supervision supervisor;
 
+InterfazInputs interinputs;
+Operativos op_aux;
 
 #ifndef DEPLOY
     #define SERIAL_PORT_NX "\\\\.\\COM15"   
@@ -130,7 +132,7 @@ int main() {
                     IEsp32::serial_println_shall(Debug::com.comando);
                 }
 
-                dbg.interprete(horno.get_instance_nextion(), horno.get_instance_op());
+                dbg.interprete(op_aux);
             }
             toProcess.clear();
         }

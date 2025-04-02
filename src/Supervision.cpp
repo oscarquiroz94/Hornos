@@ -44,7 +44,6 @@ void Supervision::verify_quemador(Horno& horno)
     }else
     {
         nx->send_quemador_state(false);
-        op->eventos.onvalvula = false;
     }
 }
 
@@ -113,12 +112,14 @@ void Supervision::verify_timer_started(Horno& horno)
 
     if (!op->confirmaciones.isQuemador) op->eventos.ontimer = false;
 
+    uint16_t tiemporunning = op->analogicos.timernx - op->analogicos.lasttimernx;
+
     if (op->eventos.ontimer)
     {
 #ifdef DEPLOY
-        String cadena = "page0.b5.txt=\"Running for: \"" + String(op->analogicos.timernx); + "\"min\"";
+        String cadena = "page0.b5.txt=\"Running for: \"" + String(tiemporunning); + "\"min\"";
 #else
-        std::string cadena = "page0.b5.txt=\"Running for: " + std::to_string(op->analogicos.timernx) + " min\"";
+        std::string cadena = "page0.b5.txt=\"Running for: " + std::to_string(tiemporunning) + " min\"";
         nx->com.send(&cadena[0]);
 #endif
         nx->send_timer_state(true);

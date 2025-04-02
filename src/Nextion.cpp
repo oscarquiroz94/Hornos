@@ -35,7 +35,7 @@ void Nextion::receive(Operativos& op, Stack& st)
     //! Esta desactivado desde Nextion
     if (com.compararEqual(com.comando, "VALVE"))
     {
-        op.eventos.onvalvula = op.eventos.onvalvula == true ? false : true;
+        //op.eventos.onvalvula = op.eventos.onvalvula == true ? false : true;
     }
 
     if (com.compararEqual(com.comando, "STOPRAMPA"))
@@ -45,10 +45,10 @@ void Nextion::receive(Operativos& op, Stack& st)
 
     if (com.compararEqual(com.comando, "RUNTIMER"))
     {
-        op.eventos.ontimer = op.eventos.ontimer == true ? false : true;
+        //op.eventos.ontimer = op.eventos.ontimer == true ? false : true;
 
         //Setear con este evento para no esperar TIMERNX
-        op.analogicos.timernx = 0;
+        //op.analogicos.timernx = 0;
     }
 
     if(com.comparar(com.comando, "SETPOINT,"))
@@ -83,9 +83,7 @@ void Nextion::receive(Operativos& op, Stack& st)
     {
         if (!op.confirmaciones.isQuemador) 
         {
-            com.send("page1.t2.txt=\"Burner not running\"");
-            IEsp32::serial_println("Rampa: quemador no encendido");
-            return;
+            com.send("page1.t2.txt=\"Running fan and burner\"");
         }
 
         //Setear con este evento para no esperar TIMERNX

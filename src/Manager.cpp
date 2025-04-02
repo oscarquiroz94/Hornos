@@ -21,22 +21,9 @@ void Manager::run(Horno& horno)
     accion_valvula(horno);
     accion_baliza(horno);
 
-    //ToDo:: revisar esta logica, cuando no esta en onramp o ontimer
-    // if (!op->eventos.onramp
-    //     && !op->eventos.ontimer)
-    // {
-    //     accion_control(horno);
-    // }
-    if (op->eventos.onramp)  accion_rampa(horno);
-    if (op->eventos.ontimer) accion_control(horno);
+    accion_control(horno);
+    accion_rampa(horno);
 
-    if (!op->eventos.onramp && !op->eventos.ontimer)
-    {
-        op->analogicos.potenciaQuem = 0.0;
-        op->eventos.onvalvula = false;
-    }
-
-    
     accion_potencia_quemador(horno);
     
 }
@@ -53,8 +40,13 @@ void Manager::accion_lectura_temperatura(Horno& horno)
     if (sensTemp == nullptr) return;
     if (sensTempAux == nullptr) return;
 
+#ifdef DEPLOY
     op->analogicos.tempera = sensTemp->read();
     op->analogicos.temperaAux = sensTempAux->read();
+#else
+    op->analogicos.tempera = emuladortempera.emular(op->analogicos.potenciaQuem);
+    op->analogicos.temperaAux = sensTempAux->read();
+#endif
 
     // //! Para simular incremento temperatura cuando valvula esta ON
     // if (!op->confirmaciones.isQuemador || !horno.get_instance_op().eventos.ontimer) return;
@@ -76,7 +68,6 @@ void Manager::accion_lectura_entradas(Horno& horno)
     if (termostato == nullptr) return;
 
 
-#ifdef CONFIRM_AVAILABLE
     //Quemador confirma encendido
     op->confirmaciones.isQuemador = quemador->is_running();
 
@@ -85,16 +76,13 @@ void Manager::accion_lectura_entradas(Horno& horno)
 
     //Termoswitche se activa por sobretemperatura
     op->confirmaciones.isTermostato = termostato->read();
-#endif
 
 
     // Si se desactiva ventilador aun se quieren leer las otras entradas
     if (ventilador == nullptr) return;
-#ifdef CONFIRM_AVAILABLE
     //Ventilador confirma encendido
     op->confirmaciones.isVentilador = ventilador->isRunning();
-#endif
-    
+
 }
 
 void Manager::accion_ventilador(Horno& horno)
@@ -126,12 +114,24 @@ void Manager::accion_quemador(Horno& horno)
     if (quemador == nullptr) return;
     if (op == nullptr) return;
 
+    if (!op->confirmaciones.isVentilador)
+        op->eventos.onquemador = false;
+
     if (op->eventos.onquemador)
     {
         quemador->on();
     }else
     {
         quemador->off();
+    }
+
+    if (op->confirmaciones.isQuemador)
+    {
+        op->eventos.onvalvula = true;
+    }else
+    {
+        op->eventos.onvalvula = false;
+        op->analogicos.potenciaQuem = 0.0;
     }
 }
 
@@ -140,30 +140,31 @@ void Manager::accion_control(Horno& horno)
     Operativos* op = &horno.get_instance_op();
 
     ControlOnOffpwm* accion = (ControlOnOffpwm*)horno.get_instace_controlador();
-    //ControlPid* pid = (ControlPid*)horno.get_instace_controlador();
-    //ControlOnOff* c_onoff = (ControlOnOff*)horno.get_instace_controlador();
 
     if (op == nullptr) return;
     if (accion == nullptr) return;
 
     //----------------
 
+    if (op->eventos.onramp) return; 
     if (!op->confirmaciones.isQuemador) return;
+    if (!op->confirmaciones.isVentilador) return;
 
-    IEsp32::serial_println("accion control");
-
-    if (op->analogicos.timernx == op->analogicos.tiempotimer )
+    if (op->analogicos.timernx - op->analogicos.lasttimernx >= op->analogicos.tiempotimer 
+        & op->eventos.ontimer)
     {
-        op->eventos.onvalvula = false;
         op->eventos.ontimer = false;
+        op->eventos.onquemador = false;
     }
 
-    op->eventos.onvalvula = true;
     accion->set_temperatura_deseada(op->analogicos.setpoint);
     op->analogicos.potenciaQuem = accion->regular(*op);  
 
-    // Control ON OFF se realiza con la valvula de alto fuego
-    //c_onoff->regular(*op);
+    if (accion->isInsideUmbral(*op) && !op->eventos.ontimer)
+    {
+        op->eventos.ontimer = true;
+        op->analogicos.lasttimernx = op->analogicos.timernx;
+    }
 }
 
 void Manager::accion_rampa(Horno& horno)
@@ -178,7 +179,12 @@ void Manager::accion_rampa(Horno& horno)
 
     //------------------
 
-    if (!op->confirmaciones.isQuemador) return;
+    if (!op->eventos.onramp) return;
+    if (!op->confirmaciones.isQuemador) 
+    {
+        op->eventos.onventilador = true;
+        op->eventos.onquemador = true;
+    }
 
     IEsp32::serial_println("accion rampa");
 
@@ -191,11 +197,7 @@ void Manager::accion_rampa(Horno& horno)
         }
     }
     
-    op->eventos.onvalvula = true;
     op->analogicos.potenciaQuem = accion->regular(*op); 
-
-    // Control ON OFF se realiza con la valvula de alto fuego
-    //c_onoff->regular(*op);
 }
 
 void Manager::accion_potencia_quemador(Horno& horno)
