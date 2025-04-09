@@ -32,7 +32,7 @@
 
 //! *********************************************************
 
-//#define SHOW_IO
+#define SHOW_IO
 #define DEBUG_INFO
 //#define SHOWNEXTION
 

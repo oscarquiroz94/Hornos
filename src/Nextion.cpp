@@ -41,6 +41,9 @@ void Nextion::receive(Operativos& op, Stack& st)
     if (com.compararEqual(com.comando, "STOPRAMPA"))
     {
         op.eventos.onramp = false;
+        op.eventos.onquemador = false;
+        op.eventos.onventilador = false;
+        com.send("page1.t2.txt=\"\"");
     }
 
     if (com.compararEqual(com.comando, "RUNTIMER"))

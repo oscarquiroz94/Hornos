@@ -147,10 +147,11 @@ void Manager::accion_control(Horno& horno)
     //----------------
 
     if (op->eventos.onramp) return; 
+
     if (!op->confirmaciones.isQuemador) return;
     if (!op->confirmaciones.isVentilador) return;
 
-    if (op->analogicos.timernx - op->analogicos.lasttimernx >= op->analogicos.tiempotimer 
+    if ((op->analogicos.timernx - op->analogicos.lasttimernx >= op->analogicos.tiempotimer)
         & op->eventos.ontimer)
     {
         op->eventos.ontimer = false;
@@ -178,8 +179,9 @@ void Manager::accion_rampa(Horno& horno)
     if (accion == nullptr) return;
 
     //------------------
-
+    
     if (!op->eventos.onramp) return;
+
     if (!op->confirmaciones.isQuemador) 
     {
         op->eventos.onventilador = true;

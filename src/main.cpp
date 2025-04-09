@@ -42,12 +42,13 @@ void setupmain()
 
     horno.set_modes();
     horno.get_instance_nextion().reset();
-    IEsp32::retardo(500);
+    IEsp32::retardo(2000);
 
-    if (horno.get_instance_stack().masterkeydone)
-    {
+    //if (horno.get_instance_stack().masterkeydone)
+    //{
         horno.get_instance_nextion().com.send("page 0");
-    }
+    //}
+
     horno.get_instance_nextion().send_stack
         (horno.get_instance_op(), horno.get_instance_stack());
 
@@ -62,7 +63,7 @@ void loop()
     manager.run(horno);
     supervisor.verify_all(horno);
     
-    dbg.interprete(horno.get_instance_nextion(), horno.get_instance_op());
+    dbg.interprete(horno.get_instance_op());
 
 
     IEsp32::retardo(200);
