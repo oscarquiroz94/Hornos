@@ -1,7 +1,7 @@
 #include "Main.h"
-#include "IEsp32.h"
-#include "Manager.h"
-#include "Supervision.h"
+#include "InterfazHardware/IEsp32.h"
+#include "Control/Manager.h"
+#include "Control/Supervision.h"
 
 Debug       dbg;
 Horno       horno;

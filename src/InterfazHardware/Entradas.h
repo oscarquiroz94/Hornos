@@ -4,7 +4,7 @@
 #include "IEsp32.h"
 #include "max6675.h"
 #include "InterfazInputs.h"
-#include "Temporizador.h"
+#include "../Utilidades/Temporizador.h"
 
 extern InterfazInputs interinputs;
 

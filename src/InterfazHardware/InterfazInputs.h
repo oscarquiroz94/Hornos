@@ -2,9 +2,9 @@
 #define __INTERFAZINPUTS
 
 #include "Main.h"
-#include "Identity.h"
+#include "../Utilidades/Identity.h"
 #include "IEsp32.h"
-#include "Operativos.h"
+#include "../Control/Operativos.h"
 
 extern Operativos op_aux;
 

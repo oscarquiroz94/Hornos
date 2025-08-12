@@ -1,7 +1,7 @@
 #ifndef __COMUNICACION
 #define __COMUNICACION
 
-#include "IEsp32.h"
+#include "../InterfazHardware/IEsp32.h"
 
 class Comunicacion
 {

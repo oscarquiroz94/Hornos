@@ -1,7 +1,7 @@
 #ifndef __TEMPORIZADOR
 #define __TEMPORIZADOR
 
-#include "IEsp32.h"
+#include "../InterfazHardware/IEsp32.h"
 
 class Temporizador {
     public:

@@ -1,8 +1,8 @@
 #ifndef __MANAGER
 #define __MANAGER
 
-#include "IEsp32.h"
-#include "Horno.h"
+#include "../InterfazHardware/IEsp32.h"
+#include "../InterfazHardware/Horno.h"
 #include "EmuladorPlanta.h"
 
 class Manager

@@ -2,8 +2,8 @@
 #define __DEBUG
 
 #include "Comunicacion.h"
-#include "Operativos.h"
-#include "Nextion.h"
+#include "../Control/Operativos.h"
+#include "../InterfazVisual/Nextion.h"
 
 class Debug
 {

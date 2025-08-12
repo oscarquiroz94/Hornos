@@ -1,5 +1,4 @@
 #include "Comunicacion.h"
-#include "IEsp32.h"
 #include "Debug.h"
 
 

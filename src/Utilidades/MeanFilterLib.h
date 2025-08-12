@@ -7,6 +7,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 #ifndef _MeanFilterLIB_h
 #define _MeanFilterLIB_h
+#include <cstddef> // for size_t
 
 template <typename T>
 class MeanFilter

@@ -1,8 +1,8 @@
 #ifndef __SUPERVISION
 #define __SUPERVISION
 
-#include "IEsp32.h"
-#include "Horno.h"
+#include "../InterfazHardware/IEsp32.h"
+#include "../InterfazHardware/Horno.h"
 
 class Supervision
 {

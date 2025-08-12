@@ -1,8 +1,8 @@
 #ifndef __OPERATIVOS
 #define __OPERATIVOS
 
-#include "IEsp32.h"
-#include "Main.h"
+#include "../InterfazHardware/IEsp32.h"
+#include "../Main.h"
 
 #ifdef DEPLOY
     #include <EEPROM.h>

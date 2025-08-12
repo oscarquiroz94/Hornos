@@ -2,9 +2,9 @@
 #define __INTERFAZOUTPUTS
 
 #include "Main.h"
-#include "Identity.h"
+#include "../Utilidades/Identity.h"
 #include "IEsp32.h"
-#include "Debug.h"
+#include "../Comunicaciones/Debug.h"
 
 extern Debug dbg;
 

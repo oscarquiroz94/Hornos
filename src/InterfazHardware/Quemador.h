@@ -1,9 +1,9 @@
 #ifndef __QUEMADOR
 #define __QUEMADOR
 
-#include "Identity.h"
+#include "../Utilidades/Identity.h"
 #include "IEsp32.h"
-#include "Operativos.h"
+#include "../Control/Operativos.h"
 #include "Entradas.h"
 #include "Salidas.h"
 

@@ -1,13 +1,13 @@
 #ifndef __HORNO
 #define __HORNO
 
-#include "Identity.h"
+#include "../Utilidades/Identity.h"
+#include "../Control/Control.h"
+#include "../Control/Operativos.h"
+#include "../InterfazVisual/Nextion.h"
 #include "IEsp32.h"
 #include "Quemador.h"
 #include "Motor.h"
-#include "Control.h"
-#include "Operativos.h"
-#include "Nextion.h"
 #include "Entradas.h"
 #include "Salidas.h"
 #include "Baliza.h"

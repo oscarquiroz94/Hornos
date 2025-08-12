@@ -1,9 +1,9 @@
 #ifndef __NEXTION
 #define __NEXTION
 
-#include "IEsp32.h"
-#include "Comunicacion.h"
-#include "Operativos.h"
+#include "../InterfazHardware/IEsp32.h"
+#include "../Comunicaciones/Comunicacion.h"
+#include "../Control/Operativos.h"
 
 class Nextion
 {

@@ -1,9 +1,10 @@
 #ifndef __CONTROL
 #define __CONTROL
 
-#include "IEsp32.h"
-#include "Temporizador.h"
-#include "MeanFilterLib.h"
+#include "../InterfazHardware/IEsp32.h"
+#include "../Control/Operativos.h"
+#include "../Utilidades/Temporizador.h"
+#include "../Utilidades/MeanFilterLib.h"
 
 class Control
 {
